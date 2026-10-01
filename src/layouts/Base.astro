@@ -1,0 +1,180 @@
+---
+import '@/styles/fuentes.css';
+import '@/styles/tokens.css';
+import '@/styles/base.css';
+import '@/styles/componentes.css';
+import '@/styles/marco.css';
+import TopBar from '@/components/TopBar.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Dialogos from '@/components/Dialogos.astro';
+import Intro from '@/components/Intro.astro';
+import Icono from '@/components/Icono.astro';
+import { negocio } from '@/data/negocio';
+import fuentes from '@/data/fuentes.json';
+import { datosCliente } from '@/lib/catalogo';
+import { waLink, msgGeneral } from '@/lib/whatsapp';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
+  type?: 'website' | 'product';
+  page: 'home' | 'catalogo' | 'producto' | 'pagina' | 'carrito';
+  jsonLd?: Record<string, unknown>[];
+  noindex?: boolean;
+  /** Pantalla de carga de marca: solo portada y solo la 1.ª visita de la sesión. */
+  intro?: boolean;
+  /** Botón flotante de WhatsApp (la ficha tiene su propia barra). */
+  waFlotante?: boolean;
+}
+
+const {
+  title,
+  description = negocio.descripcion,
+  image = '/og/portada.jpg',
+  imageAlt = 'BUNKERSNEAKERS — sneakers importados en Bogotá',
+  type = 'website',
+  page,
+  jsonLd = [],
+  noindex = false,
+  intro = false,
+  waFlotante = true,
+} = Astro.props;
+
+const site = Astro.site;
+const canonical = site ? new URL(Astro.url.pathname, site).href : undefined;
+const ogImage = site ? new URL(image, site).href : image;
+const dev = import.meta.env.DEV;
+
+const org = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: negocio.nombre,
+  description: negocio.descripcion,
+  ...(site ? { url: site.href, logo: new URL('/icon-512.png', site).href } : {}),
+  ...(Object.values(negocio.redes).some(Boolean) ? { sameAs: Object.values(negocio.redes).filter(Boolean) } : {}),
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: negocio.whatsapp.visible,
+    contactType: 'sales',
+    areaServed: 'CO',
+    availableLanguage: 'es',
+  },
+};
+const webSite = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: negocio.nombre,
+  ...(site ? { url: site.href } : {}),
+  inLanguage: 'es-CO',
+  ...(site
+    ? {
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: { '@type': 'EntryPoint', urlTemplate: `${new URL('/sneakers/', site).href}?q={search_term_string}` },
+          'query-input': 'required name=search_term_string',
+        },
+      }
+    : {}),
+};
+const ld = page === 'home' ? [org, webSite, ...jsonLd] : [org, ...jsonLd];
+---
+
+<!doctype html>
+<html lang="es-CO" data-page={page} class:list={[dev && 'rev']}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {canonical && !noindex && <link rel="canonical" href={canonical} />}
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta name="theme-color" content="#0B0B0B" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={negocio.nombre} />
+    <meta property="og:locale" content={negocio.locale} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="preload" href={fuentes.anton} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={fuentes.inter} as="font" type="font/woff2" crossorigin />
+    <slot name="head" />
+
+    <script is:inline data-intro={intro ? '1' : '0'}>
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        var rm = false;
+        try {
+          rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        } catch (e) {}
+        d.classList.add(rm ? 'rm' : 'mo');
+        // Pantalla de carga: solo en la portada, 1.ª visita de la sesión, sin
+        // ahorro de datos ni 2G y con animaciones permitidas.
+        try {
+          var c = navigator.connection;
+          var slow = c && (c.saveData || /2g/.test(c.effectiveType || ''));
+          if (document.currentScript.dataset.intro === '1' && !rm && !slow && !sessionStorage.getItem('bunker:intro')) {
+            d.classList.add('intro');
+            sessionStorage.setItem('bunker:intro', '1');
+            // Red de seguridad: si el JS principal no llega, se retira sola.
+            window.__introTimer = setTimeout(function () {
+              d.classList.add('intro-out');
+            }, 2600);
+          }
+        } catch (e) {}
+        // Si el JS principal no llega, nada queda oculto esperando un revelado.
+        setTimeout(function () {
+          if (!window.__bunker) d.classList.add('sin-app');
+        }, 4000);
+      })();
+    </script>
+    <script type="speculationrules" is:inline>
+      { "prefetch": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }] }
+    </script>
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+  </head>
+  <body>
+    {intro && <Intro />}
+    <a class="skip" href="#main">Saltar al contenido</a>
+    <TopBar />
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <Dialogos />
+    {
+      waFlotante && (
+        <a class="wa-flotante" href={waLink(msgGeneral())} target="_blank" rel="noopener" data-wa-flotante>
+          <Icono name="whatsapp" size={26} />
+          <span class="sr-only">Escríbenos por WhatsApp</span>
+        </a>
+      )
+    }
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+    <script type="application/json" id="datos-catalogo" set:html={JSON.stringify(datosCliente())} />
+    <script>
+      import '@/scripts/app.ts';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+---
+// Nuevos lanzamientos: en sneakers cada colorway es un lanzamiento propio, así
+// que aquí cada tarjeta es un color (con su enlace directo a ese color).
+import SeccionTitulo from '@/components/SeccionTitulo.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import { productos, productos as todos } from '@/lib/catalogo';
+
+const items = productos.filter((p) => p.lanzamiento).flatMap((p) => p.variantes.map((v) => ({ p, v })));
+---
+
+<section class="seccion lanz" data-surface="light" aria-labelledby="lanz-h">
+  <div class="contenedor">
+    <SeccionTitulo
+      n="01"
+      kicker="Drop actual"
+      title="Nuevos lanzamientos"
+      id="lanz-h"
+      desc="Cada colorway es un lanzamiento: elige el tuyo y te confirmamos talla y disponibilidad."
+      link={{ href: '/categoria/lanzamientos/', t: 'Ver lanzamientos' }}
+    />
+    <div class="grid-cards grid-cards--3">
+      {items.map(({ p, v }) => <ProductCard producto={p} variante={v} etiqueta="Lanzamiento" />)}
+    </div>
+    <p class="lanz__all">
+      <a class="btn btn--dark btn--lg" href="/sneakers/">Ver los {todos.length} modelos del catálogo</a>
+    </p>
+  </div>
+</section>

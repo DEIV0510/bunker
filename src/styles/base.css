@@ -1,0 +1,203 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scrollbar-gutter: stable;
+  overflow-anchor: none;
+  scroll-padding-top: calc(var(--hdr-h) + 16px);
+  background: var(--negro);
+  color: var(--hueso);
+}
+html:has(dialog[open]),
+html.intro:not(.intro-out) {
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: var(--font-text);
+  font-size: 1rem;
+  line-height: 1.55;
+  font-feature-settings: 'cv11', 'ss01';
+  background: var(--negro);
+  color: var(--hueso);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+main {
+  display: block;
+  outline: none;
+}
+img,
+svg,
+picture {
+  display: block;
+  max-width: 100%;
+}
+img {
+  height: auto;
+}
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+figure,
+blockquote,
+fieldset {
+  margin: 0;
+}
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+legend {
+  padding: 0;
+}
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+}
+input,
+select,
+textarea {
+  border-radius: 0;
+}
+table {
+  border-collapse: collapse;
+}
+[hidden] {
+  display: none !important;
+}
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus, var(--verde));
+  outline-offset: 3px;
+}
+::selection {
+  background: var(--verde);
+  color: var(--negro);
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.skip {
+  position: fixed;
+  left: 12px;
+  top: 12px;
+  z-index: 300;
+  padding: 12px 16px;
+  background: var(--verde);
+  color: var(--negro);
+  font-weight: 700;
+  transform: translateY(-160%);
+  transition: transform var(--t1);
+}
+.skip:focus {
+  transform: none;
+}
+
+.contenedor {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Rótulo técnico tipo etiqueta de producto */
+.label {
+  font-family: var(--font-text);
+  font-size: var(--label-size);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: 0.005em;
+}
+
+/* Reveal al hacer scroll: solo con JS y movimiento permitido. Si el JS
+   principal no llega, .sin-app lo deja todo visible. */
+html.js.mo:not(.sin-app) [data-reveal]:not(.is-in) {
+  opacity: 0;
+  transform: translateY(28px);
+}
+html.js.mo [data-reveal] {
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.9s var(--ease-out);
+  transition-delay: var(--d, 0ms);
+}
+
+/* Modo revisión (solo en npm run dev): datos pendientes a la vista. */
+html.rev [data-pendiente] {
+  outline: 1px dashed #ff3df5;
+  outline-offset: 2px;
+  position: relative;
+}
+html.rev [data-pendiente]::after {
+  content: 'PENDIENTE: ' attr(data-pendiente);
+  position: absolute;
+  left: 0;
+  top: -1.1em;
+  z-index: 5;
+  font: 700 10px/1.1 var(--font-text);
+  letter-spacing: 0.04em;
+  background: #ff3df5;
+  color: #000;
+  padding: 1px 4px;
+  white-space: nowrap;
+  pointer-events: none;
+}

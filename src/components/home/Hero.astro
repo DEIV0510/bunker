@@ -1,0 +1,62 @@
+---
+// Hero editorial: el titular ocupa exactamente el ancho de su columna (BUNKER y
+// SNEAKER CULTURE. justificados como el logo apilado) y la foto real de la
+// carpeta —AF1 colgados frente a una reja: el «zapato en el cable» de la
+// cultura sneaker— protagoniza la columna derecha.
+import Foto from '@/components/Foto.astro';
+import Icono from '@/components/Icono.astro';
+import { negocio } from '@/data/negocio';
+import { productos, nombreCompleto, urlProducto } from '@/lib/catalogo';
+import { thumb } from '@/lib/media';
+import { waLink, msgGeneral } from '@/lib/whatsapp';
+
+const drop = productos.find((p) => p.lanzamiento && p.variantes.length > 1);
+---
+
+<section class="hero" data-surface="dark" aria-labelledby="hero-h">
+  <div class="contenedor hero__grid">
+    <div class="hero__main">
+      <p class="hero__eyebrow label" data-in>
+        <span>N.º 001</span>
+        <span>{negocio.ubicacion.ciudad} · C.C. Puerto Príncipe</span>
+        <span class="hero__eyebrow-x">Sneakers importados</span>
+      </p>
+      <h1 class="hero__title" id="hero-h">
+        <span class="hero__l1"><span data-in>Bunker</span></span>
+        <span class="hero__l2"><span data-in>Sneaker culture<span class="hero__dot">.</span></span></span>
+      </h1>
+    </div>
+
+    <figure class="hero__fig" data-in>
+      <Foto id="af1-triple-white" version="full" priority sizes="(min-width: 1024px) 38vw, 100vw" />
+      <figcaption class="hero__cap label">
+        <span>Fig. 01</span>
+        <span>Nike Air Force 1 Low '07 · Triple White</span>
+      </figcaption>
+    </figure>
+
+    <div class="hero__copy" data-in>
+      <p class="hero__lead">Clásicos que no fallan y los pares que están sonando en la calle. Importados, en Bogotá.</p>
+      <div class="hero__ctas">
+        <a class="btn btn--primary btn--lg" href="/sneakers/">Comprar sneakers<Icono name="arrow" /></a>
+        <a class="btn btn--ghost btn--lg" href={waLink(msgGeneral())} target="_blank" rel="noopener">
+          <Icono name="whatsapp" />Hablar por WhatsApp
+        </a>
+      </div>
+      {
+        drop && (
+          <a class="hero__drop" href={urlProducto(drop)}>
+            <img src={thumb(drop.variantes[0].imagenes[0])} width="56" height="56" alt="" loading="lazy" decoding="async" />
+            <span class="hero__drop-txt">
+              <span class="hero__drop-tag">Lanzamiento</span>
+              <span>
+                {nombreCompleto(drop)} · {drop.variantes.length} colores
+              </span>
+            </span>
+            <Icono name="arrow" />
+          </a>
+        )
+      }
+    </div>
+  </div>
+</section>

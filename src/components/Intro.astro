@@ -1,0 +1,24 @@
+---
+// Pantalla de carga de marca (solo 1.ª visita de la sesión a la portada).
+// La B se dibuja, sus troneras se encienden y la línea verde avanza con hitos
+// REALES de carga (HTML listo → fuentes → foto principal decodificada). No hay
+// porcentaje ni esperas artificiales: si algo tarda, se retira igual (tope 1,8 s
+// desde app.ts y 2,6 s desde el script en línea por si el JS no llega).
+// Al salir, el «búnker» se abre por la línea de la tronera.
+import logo from '@/data/logo.json';
+import Logo from '@/components/Logo.astro';
+---
+
+<div class="intro" aria-hidden="true" data-intro>
+  <div class="intro__half intro__half--top"></div>
+  <div class="intro__half intro__half--bot"></div>
+  <div class="intro__core">
+    <svg class="intro__b" viewBox={`-1 -1 ${logo.symbol.w + 2} ${logo.symbol.h + 2}`}>
+      <path class="intro__b-line" d={logo.symbol.d} pathLength="1" />
+      <path class="intro__b-fill" fill-rule="evenodd" d={logo.symbol.d} />
+      <path class="intro__b-slit" d={logo.symbol.slits} />
+    </svg>
+    <div class="intro__bar"><span data-intro-bar></span></div>
+    <Logo class="intro__word" />
+  </div>
+</div>

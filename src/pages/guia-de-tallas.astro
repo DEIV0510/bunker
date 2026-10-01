@@ -1,0 +1,29 @@
+---
+import PaginaSimple from '@/components/PaginaSimple.astro';
+import GuiaTallas from '@/components/GuiaTallas.astro';
+import MedirPie from '@/components/MedirPie.astro';
+import Icono from '@/components/Icono.astro';
+import { waLink, msgTalla } from '@/lib/whatsapp';
+---
+
+<PaginaSimple
+  title="Guía de tallas de sneakers: US, EU y cm | BUNKERSNEAKERS"
+  description="Tablas oficiales de tallas de Nike, Jordan, adidas, New Balance y Vans con equivalencias US, UK, EU y centímetros. Aprende a medir tu pie."
+  h1="Guía de tallas"
+  kicker="US · UK · EU · cm"
+  intro="No existe una tabla universal: cada marca convierte distinto y puede variar según el modelo. Mide tu pie y compáralo con la tabla oficial de la marca que vas a comprar."
+  migas={[{ t: 'Inicio', href: '/' }, { t: 'Guía de tallas' }]}
+  ancho
+>
+  <div class="tallas-pag">
+    <section aria-labelledby="medir-h">
+      <h2 class="pagina__h2" id="medir-h">Cómo medir tu pie</h2>
+      <MedirPie />
+      <a class="btn btn--dark btn--lg tallas-sec__cta" href={waLink(msgTalla())} target="_blank" rel="noopener"><Icono name="whatsapp" />¿Dudas con tu talla? Escríbenos</a>
+    </section>
+    <section aria-labelledby="tablas-h">
+      <h2 class="pagina__h2" id="tablas-h">Tablas oficiales por marca</h2>
+      <GuiaTallas idp="pag" />
+    </section>
+  </div>
+</PaginaSimple>

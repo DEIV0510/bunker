@@ -1,0 +1,120 @@
+---
+// Listado de productos con filtros reales (marca, búsqueda, orden). Todo se
+// renderiza en el HTML (indexable y funcional sin JS); el script solo oculta,
+// ordena y escribe los filtros en la URL para poder compartirla.
+import ProductCard from '@/components/ProductCard.astro';
+import Migas from '@/components/Migas.astro';
+import Icono from '@/components/Icono.astro';
+import { type Producto, categorias, marcas, nombreCompleto, precioDe, slugify } from '@/lib/catalogo';
+import { waLink, msgGeneral } from '@/lib/whatsapp';
+
+interface Props {
+  titulo: string;
+  kicker: string;
+  descripcion?: string;
+  items: Producto[];
+  migas: { t: string; href?: string }[];
+  /** Ruta activa para resaltar la categoría. */
+  actual?: string;
+  /** Permite buscar y filtrar por marca (página general). */
+  completo?: boolean;
+}
+
+const { titulo, kicker, descripcion, items, migas, actual = '/sneakers/', completo = false } = Astro.props;
+const conPrecio = items.some((p) => precioDe(p) !== null);
+const marcasAqui = marcas.filter((m) => items.some((p) => p.marca === m.nombre));
+---
+
+<section class="listado" data-surface="light" aria-labelledby="listado-h">
+  <div class="contenedor">
+    <div class="listado__top">
+      <Migas items={migas} />
+      <p class="label listado__k">{kicker}</p>
+      <h1 class="listado__h" id="listado-h">{titulo}</h1>
+      {descripcion && <p class="listado__d">{descripcion}</p>}
+    </div>
+
+    <nav class="listado__cats" aria-label="Categorías">
+      <ul>
+        <li><a class="chip" href="/sneakers/" aria-current={actual === '/sneakers/' ? 'page' : undefined}>Todos</a></li>
+        {
+          categorias.map((c) => (
+            <li>
+              <a class="chip" href={`/categoria/${c.slug}/`} aria-current={actual === `/categoria/${c.slug}/` ? 'page' : undefined}>
+                {c.corto}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <form class="filtros" data-filtros role="search" aria-label="Filtrar productos" action="/sneakers/" method="get">
+      {
+        completo && (
+          <div class="field filtros__q">
+            <label for="f-q">Buscar</label>
+            <input id="f-q" name="q" type="search" placeholder="Modelo, marca o color" autocomplete="off" enterkeyhint="search" />
+          </div>
+        )
+      }
+      {
+        marcasAqui.length > 1 && (
+          <div class="field">
+            <label for="f-marca">Marca</label>
+            <select id="f-marca" name="marca">
+              <option value="">Todas</option>
+              {marcasAqui.map((m) => (
+                <option value={m.slug}>{m.nombre}</option>
+              ))}
+            </select>
+          </div>
+        )
+      }
+      <div class="field">
+        <label for="f-orden">Ordenar</label>
+        <select id="f-orden" name="orden">
+          <option value="">Destacados</option>
+          <option value="az">Nombre: A–Z</option>
+          {conPrecio && <option value="precio-asc">Precio: menor a mayor</option>}
+          {conPrecio && <option value="precio-desc">Precio: mayor a menor</option>}
+        </select>
+      </div>
+      <noscript><button class="btn btn--dark" type="submit">Aplicar</button></noscript>
+    </form>
+
+    <p class="listado__count" aria-live="polite" data-count>
+      {items.length} {items.length === 1 ? 'modelo' : 'modelos'}
+    </p>
+
+    <ul class="grid-cards" data-grid>
+      {
+        items.map((p, i) => (
+          <li
+            class="listado__item"
+            data-i={i}
+            data-marca={slugify(p.marca)}
+            data-nombre={nombreCompleto(p)}
+            data-precio={precioDe(p) ?? ''}
+            data-k={[p.marca, p.modelo, ...p.categorias, ...p.variantes.map((v) => v.color)].join(' ')}
+          >
+            <ProductCard producto={p} hx="h2" priority={i < 2} etiqueta={p.lanzamiento ? 'Lanzamiento' : null} />
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="listado__vacio" data-vacio hidden>
+      <p class="listado__vacio-t">No hay modelos con esos filtros.</p>
+      <p>¿Buscas un par que no ves aquí? Escríbenos: te decimos si lo conseguimos.</p>
+      <div class="hero__ctas">
+        <button class="btn btn--dark" type="button" data-limpiar>Quitar filtros</button>
+        <a class="btn btn--outline" href={waLink(msgGeneral())} target="_blank" rel="noopener"><Icono name="whatsapp" />Preguntar por WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '@/scripts/listado.ts';
+</script>

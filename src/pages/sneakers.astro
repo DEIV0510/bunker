@@ -1,0 +1,21 @@
+---
+import Base from '@/layouts/Base.astro';
+import Listado from '@/components/Listado.astro';
+import { productos } from '@/lib/catalogo';
+import '@/styles/paginas.css';
+---
+
+<Base
+  title="Sneakers importados en Bogotá | BUNKERSNEAKERS"
+  description={`Catálogo de ${productos.length} modelos: Jordan, Nike, adidas, New Balance, Vans y más. Filtra por marca, elige tu talla y compra en la web o por WhatsApp.`}
+  page="catalogo"
+>
+  <Listado
+    titulo="Sneakers"
+    kicker={`Archivo completo · ${productos.length} modelos`}
+    descripcion="Todo lo que hay en el Bunker. Filtra por marca o busca por modelo y color."
+    items={productos}
+    migas={[{ t: 'Inicio', href: '/' }, { t: 'Sneakers' }]}
+    completo
+  />
+</Base>

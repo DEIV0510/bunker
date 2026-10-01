@@ -1,0 +1,31 @@
+---
+import SeccionTitulo from '@/components/SeccionTitulo.astro';
+import GuiaTallas from '@/components/GuiaTallas.astro';
+import MedirPie from '@/components/MedirPie.astro';
+import Icono from '@/components/Icono.astro';
+import { waLink, msgTalla } from '@/lib/whatsapp';
+---
+
+<section class="seccion tallas-sec" data-surface="light" aria-labelledby="tallas-h">
+  <div class="contenedor">
+    <SeccionTitulo
+      n="06"
+      kicker="US · EU · cm"
+      title="Guía de tallas"
+      id="tallas-h"
+      desc="Cada marca tiene su propia tabla y la conversión puede variar según el modelo. Mide tu pie y compara con la tabla de la marca."
+      link={{ href: '/guia-de-tallas/', t: 'Ver guía completa' }}
+    />
+    <div class="tallas-sec__grid">
+      <div data-reveal>
+        <MedirPie />
+        <a class="btn btn--dark btn--lg tallas-sec__cta" href={waLink(msgTalla())} target="_blank" rel="noopener">
+          <Icono name="whatsapp" />¿Dudas con tu talla? Escríbenos
+        </a>
+      </div>
+      <div data-reveal>
+        <GuiaTallas idp="home" />
+      </div>
+    </div>
+  </div>
+</section>

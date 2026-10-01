@@ -1,0 +1,53 @@
+---
+// Compra por categoría (cada tile lleva a un listado filtrado real) y por marca
+// (solo marcas presentes en el catálogo, en texto: sin logos de terceros).
+import SeccionTitulo from '@/components/SeccionTitulo.astro';
+import Foto from '@/components/Foto.astro';
+import Icono from '@/components/Icono.astro';
+import { categorias, productosDe, marcas } from '@/lib/catalogo';
+
+const tiles = categorias.filter((c) => c.slug !== 'lanzamientos');
+---
+
+<section class="seccion cats" data-surface="dark" aria-labelledby="cats-h">
+  <div class="contenedor">
+    <SeccionTitulo n="02" kicker="Explora el archivo" title="Compra por categoría" id="cats-h" />
+    <ul class="cats__grid">
+      {
+        tiles.map((c, i) => {
+          const n = productosDe(c.slug).length;
+          return (
+            <li class={`cats__tile cats__tile--${i + 1}`} data-reveal>
+              <a href={`/categoria/${c.slug}/`}>
+                <Foto id={c.portada} sizes="(min-width: 1024px) 34vw, (min-width: 640px) 50vw, 100vw" alt="" />
+                <span class="cats__info">
+                  <span class="cats__k label">Cat. 0{i + 1} · {n} {n === 1 ? 'modelo' : 'modelos'}</span>
+                  <span class="cats__t">{c.corto}</span>
+                  <span class="cats__d">{c.descripcion}</span>
+                </span>
+                <span class="cats__go" aria-hidden="true">
+                  <Icono name="arrow-up-right" size={28} />
+                </span>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+
+    <div class="marcas" data-reveal>
+      <p class="label marcas__k">Marcas en el Bunker</p>
+      <ul class="marcas__list">
+        {
+          marcas.map((m) => (
+            <li>
+              <a href={`/marca/${m.slug}/`}>
+                {m.nombre}<sup>{m.cantidad}<span class="sr-only"> {m.cantidad === 1 ? 'modelo' : 'modelos'}</span></sup>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

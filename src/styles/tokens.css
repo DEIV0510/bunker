@@ -1,0 +1,94 @@
+/* ───────────── BUNKERSNEAKERS · tokens ─────────────
+   Paleta de marca: verde ácido (#C6FF00) SOLO para acción, foco e indicadores;
+   negro, gris industrial y hueso dan el protagonismo a las zapatillas.
+   Esquinas rectas en todo (seriedad industrial). */
+:root {
+  --verde: #c6ff00;
+  --verde-2: #b2e600;
+  --negro: #0b0b0b;
+  --tinta: #141414;
+  --acero: #1c1c1c;
+  --gris: #858585;
+  --hueso: #f4f2ec;
+  --hueso-2: #e9e6dd;
+  --blanco: #ffffff;
+
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+  --s9: 96px;
+
+  --gutter: clamp(16px, 4vw, 48px);
+  --max: 1440px;
+  --topbar-h: 36px;
+  --hdr-h: 56px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.5, 0, 0.75, 0);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --t1: 160ms;
+  --t2: 260ms;
+  --t3: 520ms;
+
+  --z-hdr: 40;
+  --z-float: 50;
+  --z-bar: 60;
+  --z-toast: 120;
+  --z-intro: 200;
+
+  --label-size: 0.75rem;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --hdr-h: 68px;
+  }
+}
+
+/* Superficies: cada sección declara la suya y los componentes heredan. */
+[data-surface='dark'] {
+  --bg: var(--negro);
+  --fg: var(--hueso);
+  --fg-2: #a3a3a3;
+  --linea: #262626;
+  --linea-2: #3a3a3a;
+  --card: #121212;
+  --focus: var(--verde);
+  --err: #ff7a6e;
+  --accent-ink: var(--verde);
+  color-scheme: dark;
+}
+[data-surface='ink'] {
+  --bg: var(--tinta);
+  --fg: var(--hueso);
+  --fg-2: #a8a8a8;
+  --linea: #2c2c2c;
+  --linea-2: #404040;
+  --card: #1a1a1a;
+  --focus: var(--verde);
+  --err: #ff7a6e;
+  --accent-ink: var(--verde);
+  color-scheme: dark;
+}
+[data-surface='light'] {
+  --bg: var(--hueso);
+  --fg: var(--negro);
+  --fg-2: #555350;
+  --linea: #d3cfc4;
+  --linea-2: #b9b4a7;
+  --card: var(--hueso-2);
+  --focus: var(--negro);
+  --err: #b3261e;
+  /* El verde no se lee como texto sobre hueso: el acento pasa a negro. */
+  --accent-ink: var(--negro);
+  color-scheme: light;
+}
+[data-surface] {
+  background-color: var(--bg);
+  color: var(--fg);
+}

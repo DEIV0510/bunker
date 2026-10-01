@@ -1,0 +1,37 @@
+---
+// Compra por unidad y al por mayor, lado a lado y sin saturar.
+import SeccionTitulo from '@/components/SeccionTitulo.astro';
+import FormMayor from '@/components/FormMayor.astro';
+import Icono from '@/components/Icono.astro';
+import { waLink, msgGeneral } from '@/lib/whatsapp';
+import { negocio } from '@/data/negocio';
+---
+
+<section class="seccion modos" data-surface="light" aria-labelledby="modos-h" id="por-mayor">
+  <div class="contenedor">
+    <SeccionTitulo n="04" kicker="Detal y por mayor" title="Compra como necesites" id="modos-h" />
+    <div class="modos__grid">
+      <div class="modos__card" data-reveal>
+        <p class="label">Por unidad</p>
+        <h3 class="modos__t">Un par, el tuyo</h3>
+        <ol class="pasos">
+          <li><span class="pasos__n">01</span><span><strong>Elige modelo y color.</strong> Fotos y detalle en cada ficha.</span></li>
+          <li><span class="pasos__n">02</span><span><strong>Revisa tu talla.</strong> Tabla oficial de cada marca.</span></li>
+          <li><span class="pasos__n">03</span><span><strong>Compra en la web o por WhatsApp.</strong> Te confirmamos disponibilidad antes de pagar.</span></li>
+        </ol>
+        <div class="modos__ctas">
+          <a class="btn btn--dark btn--lg" href="/sneakers/">Ver catálogo<Icono name="arrow" /></a>
+          <a class="btn btn--outline btn--lg" href={waLink(msgGeneral())} target="_blank" rel="noopener"><Icono name="whatsapp" />Asesoría</a>
+        </div>
+      </div>
+      <div class="modos__card modos__card--mayor" data-reveal data-surface="dark">
+        <p class="label">Al por mayor</p>
+        <h3 class="modos__t">Para tu tienda o tu parche</h3>
+        <p class="modos__d" data-pendiente={negocio.mayoristas.condiciones ? undefined : 'condiciones por mayor'}>
+          {negocio.mayoristas.condiciones ?? 'Cuéntanos qué buscas y te enviamos por WhatsApp las condiciones para tu pedido.'}
+        </p>
+        <FormMayor idp="home-mayor" />
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,59 @@
+---
+// Guía de tallas con las tablas OFICIALES de cada marca (src/data/tallas.ts).
+// Sin JS se ven todas las tablas; con JS, una a la vez según la marca elegida.
+import { tablas } from '@/data/tallas';
+
+interface Props {
+  idp?: string;
+  inicial?: string;
+}
+const { idp = 'tallas', inicial = 'nike-hombre' } = Astro.props;
+---
+
+<div class="tallas" data-tallas>
+  <fieldset class="tallas__tabs">
+    <legend class="tallas__legend">Tabla de la marca</legend>
+    <div class="tallas__tabrow">
+      {
+        tablas.map((t) => (
+          <label class="tab">
+            <input type="radio" name={`${idp}-tabla`} value={t.id} checked={t.id === inicial} />
+            <span>{t.titulo}</span>
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
+  {
+    tablas.map((t) => (
+      <div class="tallas__panel" data-tabla={t.id}>
+        <div class="tabla-scroll" role="region" aria-label={`Tabla de tallas ${t.titulo}`} tabindex="0">
+          <table class="tabla">
+            <caption class="sr-only">Equivalencias de talla {t.titulo}</caption>
+            <thead>
+              <tr>
+                {t.columnas.map((c) => (
+                  <th scope="col">{c}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {t.filas.map((f) => (
+                <tr>
+                  {f.map((x, i) => (i === 0 ? <th scope="row">{x}</th> : <td>{x}</td>))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="tallas__src">
+          Fuente: tabla oficial en{' '}
+          <a href={t.url} target="_blank" rel="noopener">
+            {t.fuente}
+          </a>{' '}
+          (consultada el 1 de octubre de 2026). {t.nota}
+        </p>
+      </div>
+    ))
+  }
+</div>

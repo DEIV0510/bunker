@@ -1,0 +1,293 @@
+---
+import Base from '@/layouts/Base.astro';
+import Foto from '@/components/Foto.astro';
+import Icono from '@/components/Icono.astro';
+import Migas from '@/components/Migas.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import GuiaTallas from '@/components/GuiaTallas.astro';
+import {
+  productos,
+  type Producto,
+  nombreCompleto,
+  precioDe,
+  tallasDe,
+  formatoCOP,
+  categorias,
+  relacionados,
+  numero,
+  slugify,
+  urlProducto,
+} from '@/lib/catalogo';
+import { pictureData, getMedia, thumb } from '@/lib/media';
+import { tallasReferenciaEU, tablaPorMarca } from '@/data/tallas';
+import { negocio, pagosVisibles } from '@/data/negocio';
+import { waLink, msgProducto, msgTalla } from '@/lib/whatsapp';
+import '@/styles/paginas.css';
+
+export function getStaticPaths() {
+  return productos.map((p) => ({ params: { slug: p.slug }, props: { p } }));
+}
+const { p } = Astro.props as { p: Producto };
+const nombre = nombreCompleto(p);
+const v0 = p.variantes[0];
+const precio0 = precioDe(p, v0);
+const cat = categorias.find((c) => c.slug === p.categorias[0])!;
+const site = Astro.site;
+const rel = relacionados(p, 4);
+const hero = pictureData(v0.imagenes[0], 'full');
+
+const colores = p.variantes.map((v) => v.color).join(', ');
+const descMeta = `${nombre}${p.variantes.length > 1 ? ` en ${p.variantes.length} colores (${colores})` : ` ${v0.color}`}. ${p.descripcion} Compra en Bogotá o pide por WhatsApp.`.slice(0, 300);
+
+// Datos estructurados: Offer SOLO si hay precio real; disponibilidad solo si hay tallas confirmadas.
+const tallas0 = tallasDe(p, v0);
+const productLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: nombre,
+  description: p.descripcion,
+  brand: { '@type': 'Brand', name: p.marca },
+  color: v0.color,
+  category: cat.nombre,
+  ...(site ? { image: p.variantes.flatMap((v) => v.imagenes).map((id) => new URL(getMedia(id).full.webp.at(-1)![0], site).href), url: new URL(`/producto/${p.slug}/`, site).href } : {}),
+  ...(precio0 && site
+    ? {
+        offers: {
+          '@type': 'Offer',
+          price: precio0,
+          priceCurrency: 'COP',
+          url: new URL(`/producto/${p.slug}/`, site).href,
+          ...(tallas0 ? { availability: tallas0.some((t) => t.disponible) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' } : {}),
+        },
+      }
+    : {}),
+};
+
+const fichaDatos = {
+  slug: p.slug,
+  nombre,
+  variantes: p.variantes.map((v) => ({ id: v.id, color: v.color, precio: precioDe(p, v), nota: v.nota ?? '', url: urlProducto(p, v) })),
+};
+---
+
+<Base
+  title={`${nombre}${p.variantes.length === 1 ? ` ${v0.color}` : ''} | BUNKERSNEAKERS Bogotá`}
+  description={descMeta}
+  image={`/og/${p.slug}.jpg`}
+  imageAlt={`${nombre} — BUNKERSNEAKERS`}
+  type="product"
+  page="producto"
+  jsonLd={[productLd]}
+  waFlotante={false}
+>
+  <Fragment slot="head">
+    <link rel="preload" as="image" type="image/avif" imagesrcset={hero.avif} imagesizes="(min-width: 1024px) 56vw, 100vw" fetchpriority="high" />
+  </Fragment>
+
+  <div class="ficha" data-surface="light" data-ficha>
+    <div class="contenedor">
+      <Migas items={[{ t: 'Inicio', href: '/' }, { t: cat.nombre, href: `/categoria/${cat.slug}/` }, { t: nombre }]} />
+
+      <div class="ficha__grid">
+        <div class="ficha__gal">
+          {
+            p.variantes.map((v, vi) => (
+              <div class="gal" data-gal={v.id} hidden={vi > 0}>
+                <div class="gal__track" tabindex="0" role="region" aria-label={`Fotos de ${nombre} ${v.color}`} data-gal-track>
+                  {v.imagenes.map((id, i) => (
+                    <figure class="gal__slide" id={`g-${v.id}-${i}`}>
+                      <Foto id={id} version="full" sizes="(min-width: 1024px) 56vw, 100vw" priority={vi === 0 && i === 0} lazy={vi > 0} />
+                    </figure>
+                  ))}
+                </div>
+                {v.imagenes.length > 1 && (
+                  <div class="gal__thumbs" aria-label="Elegir foto">
+                    {v.imagenes.map((id, i) => (
+                      <button class="gal__thumb" type="button" data-ir={i} aria-label={`Ver foto ${i + 1} de ${v.imagenes.length}`} aria-current={i === 0 ? 'true' : undefined}>
+                        <img src={thumb(id)} width="64" height="64" alt="" loading="lazy" decoding="async" />
+                      </button>
+                    ))}
+                    <span class="gal__count label" data-gal-count aria-hidden="true">
+                      1/{v.imagenes.length}
+                    </span>
+                  </div>
+                )}
+              </div>
+            ))
+          }
+        </div>
+
+        <div class="ficha__info">
+          <p class="ficha__k label">
+            <a href={`/marca/${slugify(p.marca)}/`}>{p.marca}</a>
+            <span>N.º {numero(p)}</span>
+            {p.lanzamiento && <span class="ficha__tag">Lanzamiento</span>}
+          </p>
+          <h1 class="ficha__h">{nombre}</h1>
+          <p class="ficha__color">
+            Color: <strong data-f-color>{v0.color}</strong>
+            <span class="ficha__nota" data-f-nota hidden={!v0.nota}>{v0.nota}</span>
+          </p>
+          <p class:list={['ficha__precio', !precio0 && 'ficha__precio--tbd']} data-f-precio data-pendiente={precio0 ? undefined : 'precio'}>
+            {precio0 ? formatoCOP(precio0) : 'Precio por confirmar'}
+          </p>
+          <p class="ficha__precio-nota" data-f-precio-nota hidden={!!precio0}>Escríbenos y te damos el precio y la disponibilidad de tu talla.</p>
+
+          <form class="compra" data-compra novalidate>
+            {
+              p.variantes.length > 1 && (
+                <fieldset class="compra__bloque">
+                  <legend class="compra__legend">
+                    Color <span class="compra__sel" data-f-color2>{v0.color}</span>
+                  </legend>
+                  <div class="swatches__row">
+                    {p.variantes.map((v, i) => (
+                      <label class="swatch swatch--lg">
+                        <input type="radio" name="color" value={v.id} checked={i === 0} />
+                        <img src={thumb(v.imagenes[0])} width="64" height="64" alt="" loading="lazy" decoding="async" />
+                        <span class="sr-only">{v.color}</span>
+                        <Icono name="check" size={14} class="swatch__check" />
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+              )
+            }
+
+            {
+              p.variantes.map((v, vi) => {
+                const t = tallasDe(p, v);
+                const lista = t ?? tallasReferenciaEU.map((eu) => ({ eu, disponible: true }));
+                return (
+                  <fieldset class="compra__bloque" data-tallas-v={v.id} hidden={vi > 0} aria-describedby={`talla-err ${t ? '' : `talla-ref-${v.id}`}`}>
+                    <legend class="compra__legend">
+                      Talla (EU) <span class="compra__sel" data-f-talla-sel />
+                    </legend>
+                    <button class="compra__guia" type="button" data-abrir="tallas" aria-haspopup="dialog" aria-controls="dlg-tallas">
+                      <Icono name="ruler" size={18} />
+                      Guía de tallas
+                    </button>
+                    <div class="tallas-sel">
+                      {lista.map((s) => (
+                        <label class:list={['talla', !s.disponible && 'talla--agotada']}>
+                          <input type="radio" name={`talla-${v.id}`} value={s.eu} disabled={!s.disponible} />
+                          <span>{s.eu}</span>
+                          {!s.disponible && <span class="sr-only"> (agotada)</span>}
+                        </label>
+                      ))}
+                    </div>
+                    {!t && (
+                      <p class="compra__help" id={`talla-ref-${v.id}`} data-pendiente="tallas disponibles">
+                        Tallas de referencia: elige la tuya y te confirmamos la disponibilidad antes de pagar.
+                      </p>
+                    )}
+                  </fieldset>
+                );
+              })
+            }
+            <p class="field__err compra__err" id="talla-err" role="alert" data-f-err hidden>Elige tu talla para continuar.</p>
+
+            <div class="compra__bloque compra__qty">
+              <span class="compra__legend" id="qty-l">Cantidad</span>
+              <div class="qty" role="group" aria-labelledby="qty-l">
+                <button type="button" data-qty="-1" aria-label="Quitar uno" disabled><Icono name="minus" size={18} /></button>
+                <output data-f-qty aria-live="polite">1</output>
+                <button type="button" data-qty="1" aria-label="Agregar uno"><Icono name="plus" size={18} /></button>
+              </div>
+            </div>
+
+            <div class="compra__ctas" data-f-ctas>
+              <button class="btn btn--primary btn--lg btn--block" type="submit">
+                <Icono name="bag" />Agregar al carrito
+              </button>
+              <a class="btn btn--outline btn--lg btn--block" href={waLink(msgProducto(nombre, v0.color, null, precio0))} target="_blank" rel="noopener" data-f-wa>
+                <Icono name="whatsapp" />Comprar por WhatsApp
+              </a>
+            </div>
+          </form>
+
+          <p class="ficha__desc">{p.descripcion}</p>
+
+          <ul class="ficha__datos">
+            <li>
+              <Icono name="truck" />
+              <div>
+                <p class="ficha__dt">Envío</p>
+                <p>
+                  {negocio.envios.gratisBogota ? 'Gratis en Bogotá.' : ''} {negocio.envios.costoNacional ?? 'Resto del país: costo y tiempo según tu ciudad, te lo confirmamos antes de despachar.'}{' '}
+                  <a href="/politicas/envios/">Ver envíos</a>
+                </p>
+              </div>
+            </li>
+            <li data-pendiente={negocio.cambios.politica ? undefined : 'política de cambios'}>
+              <Icono name="box" />
+              <div>
+                <p class="ficha__dt">Cambios</p>
+                <p>
+                  {negocio.cambios.politica ?? 'Te asesoramos con la talla antes de comprar; las condiciones de cambio te las confirmamos por WhatsApp antes del pago.'}{' '}
+                  <a href="/politicas/cambios/">Ver cambios</a>
+                </p>
+              </div>
+            </li>
+            <li>
+              <Icono name="card" />
+              <div>
+                <p class="ficha__dt">Pago</p>
+                <p>{pagosVisibles.map((x) => (x.estado === 'consultar' ? `${x.nombre} (${x.corto.includes('(') ? 'pregunta si aplica' : 'según cobertura'})` : x.nombre)).join(' · ')}</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {
+    rel.length > 0 && (
+      <section class="seccion relacionados" data-surface="light" aria-labelledby="rel-h">
+        <div class="contenedor">
+          <h2 class="rel__h" id="rel-h">
+            También en el Bunker
+          </h2>
+          <div class="grid-cards">
+            {rel.map((q) => (
+              <ProductCard producto={q} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <div class="barra-compra" data-surface="dark" data-barra aria-hidden="true" inert>
+    <img src={thumb(v0.imagenes[0])} width="44" height="44" alt="" loading="lazy" decoding="async" data-b-img />
+    <div class="barra-compra__txt">
+      <p class="barra-compra__n">{p.modelo}</p>
+      <p class="barra-compra__p" data-b-precio>{precio0 ? formatoCOP(precio0) : 'Precio por confirmar'}</p>
+    </div>
+    <a class="icon-btn barra-compra__wa" href={waLink(msgProducto(nombre, v0.color, null, precio0))} target="_blank" rel="noopener" data-f-wa>
+      <Icono name="whatsapp" />
+      <span class="sr-only">Comprar por WhatsApp</span>
+    </a>
+    <button class="btn btn--primary" type="button" data-b-add>Agregar</button>
+  </div>
+
+  <dialog class="dlg dlg--side" id="dlg-tallas" aria-labelledby="tallas-dlg-h" data-surface="light">
+    <div class="dlg__head">
+      <h2 class="dlg__title" id="tallas-dlg-h">Guía de tallas</h2>
+      <button class="icon-btn" type="button" data-cerrar><Icono name="close" /><span class="sr-only">Cerrar guía de tallas</span></button>
+    </div>
+    <div class="cart">
+      <p class="dlg__intro">Cada marca tiene su propia tabla. Mide tu pie (talón al dedo más largo) y búscalo en la columna de cm.</p>
+      <GuiaTallas idp="ficha" inicial={tablaPorMarca(p.marca)} />
+    </div>
+    <div class="dlg__foot">
+      <a class="btn btn--dark btn--block" href={waLink(msgTalla(nombre))} target="_blank" rel="noopener"><Icono name="whatsapp" />¿Dudas con tu talla? Escríbenos</a>
+    </div>
+  </dialog>
+
+  <script type="application/json" id="ficha-datos" set:html={JSON.stringify(fichaDatos)} />
+  <script>
+    import '@/scripts/ficha.ts';
+  </script>
+</Base>

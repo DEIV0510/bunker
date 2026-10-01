@@ -1,0 +1,57 @@
+---
+// Cotización al por mayor → abre WhatsApp con los datos (no se guardan en la web).
+// No se inventan mínimos ni descuentos: si negocio.mayoristas los define, se muestran.
+import Icono from '@/components/Icono.astro';
+import { negocio } from '@/data/negocio';
+import { productos, nombreCompleto } from '@/lib/catalogo';
+
+interface Props {
+  idp?: string;
+}
+const { idp = 'mayor' } = Astro.props;
+---
+
+<form class="form" data-form-mayor novalidate>
+  <div class="form__row">
+    <div class="field">
+      <label for={`${idp}-nombre`}>Nombre <span aria-hidden="true">*</span></label>
+      <input id={`${idp}-nombre`} name="nombre" type="text" autocomplete="name" required minlength="2" aria-describedby={`${idp}-nombre-err`} />
+      <p class="field__err" id={`${idp}-nombre-err`} hidden>Escribe tu nombre.</p>
+    </div>
+    <div class="field">
+      <label for={`${idp}-ciudad`}>Ciudad <span aria-hidden="true">*</span></label>
+      <input id={`${idp}-ciudad`} name="ciudad" type="text" autocomplete="address-level2" required minlength="3" list={`${idp}-ciudades`} aria-describedby={`${idp}-ciudad-err`} />
+      <datalist id={`${idp}-ciudades`}>
+        {['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Bucaramanga', 'Cartagena', 'Cúcuta', 'Pereira', 'Villavicencio', 'Ibagué'].map((c) => <option value={c} />)}
+      </datalist>
+      <p class="field__err" id={`${idp}-ciudad-err`} hidden>Escribe tu ciudad.</p>
+    </div>
+  </div>
+  <div class="field">
+    <label for={`${idp}-cantidad`}>Cantidad aproximada de pares <span aria-hidden="true">*</span></label>
+    <input id={`${idp}-cantidad`} name="cantidad" type="number" inputmode="numeric" min="1" step="1" required aria-describedby={`${idp}-cantidad-help ${idp}-cantidad-err`} />
+    <p class="field__help" id={`${idp}-cantidad-help`}>
+      {negocio.mayoristas.minimo ?? 'Te confirmamos el mínimo y las condiciones según la cantidad.'}
+    </p>
+    <p class="field__err" id={`${idp}-cantidad-err`} hidden>Indica una cantidad (número de pares).</p>
+  </div>
+  <div class="field">
+    <label for={`${idp}-modelos`}>Modelos de interés</label>
+    <textarea id={`${idp}-modelos`} name="modelos" rows="3" placeholder="Ej.: Jordan 12, Superstar negro, tallas 38 a 42"></textarea>
+    <ul class="form__picks" aria-label="Agregar modelos rápido">
+      {
+        productos.slice(0, 8).map((p) => (
+          <li>
+            <button class="chip chip--btn" type="button" data-pick={nombreCompleto(p)}>
+              + {p.modelo.replace(/[«»]/g, '')}
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  <button class="btn btn--primary btn--lg btn--block" type="submit">
+    <Icono name="whatsapp" />Cotizar al por mayor
+  </button>
+  <p class="form__note">Se abre WhatsApp con tus datos para que confirmes el envío del mensaje.</p>
+</form>

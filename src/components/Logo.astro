@@ -1,0 +1,32 @@
+---
+// Logotipo en SVG en línea (sin petición extra). Colores por CSS:
+//   --logo-fg (BUNKER), --logo-gray (SNEAKERS), --logo-slit (troneras de la B).
+// variant="simbolo" → solo la B (móvil, favicon, avatar).
+import logo from '@/data/logo.json';
+
+interface Props {
+  variant?: 'horizontal' | 'simbolo';
+  class?: string;
+  title?: string;
+}
+const { variant = 'horizontal', class: cls, title = 'BUNKERSNEAKERS' } = Astro.props;
+const isSymbol = variant === 'simbolo';
+const vb = isSymbol ? `0 0 ${logo.symbol.w} ${logo.symbol.h}` : `0 0 ${logo.w} ${logo.h}`;
+---
+
+<svg class:list={['logo', `logo--${variant}`, cls]} viewBox={vb} role="img" aria-label={title} focusable="false">
+  {
+    isSymbol ? (
+      <>
+        <path class="logo__fg" fill-rule="evenodd" d={logo.symbol.d} />
+        <path class="logo__slit" d={logo.symbol.slits} />
+      </>
+    ) : (
+      <>
+        <path class="logo__fg" fill-rule="evenodd" d={logo.bunker} />
+        <path class="logo__slit" d={logo.slits} />
+        <path class="logo__gray" fill-rule="evenodd" d={logo.sneakers} />
+      </>
+    )
+  }
+</svg>

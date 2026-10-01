@@ -1,0 +1,19 @@
+---
+import Base from '@/layouts/Base.astro';
+import Icono from '@/components/Icono.astro';
+import '@/styles/paginas.css';
+---
+
+<Base title="Página no encontrada | BUNKERSNEAKERS" description="Esta página no existe." page="pagina" noindex>
+  <section class="nf" data-surface="dark">
+    <div class="contenedor">
+      <p class="label">Error 404</p>
+      <h1 class="nf__h">Este par no está en el Bunker</h1>
+      <p class="listado__d">La página que buscas no existe o cambió de dirección.</p>
+      <div class="hero__ctas">
+        <a class="btn btn--primary btn--lg" href="/sneakers/">Ver sneakers<Icono name="arrow" /></a>
+        <a class="btn btn--ghost btn--lg" href="/">Ir al inicio</a>
+      </div>
+    </div>
+  </section>
+</Base>

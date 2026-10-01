@@ -1,0 +1,36 @@
+---
+// <picture> con AVIF + WebP y dimensiones explícitas (sin saltos de diseño).
+// version="sq" → cuadrada (tarjetas); "full" → foto completa (ficha, hero).
+import type { MediaId } from '@/lib/catalogo';
+import { pictureData } from '@/lib/media';
+
+interface Props {
+  id: MediaId;
+  sizes: string;
+  version?: 'full' | 'sq';
+  alt?: string;
+  priority?: boolean;
+  lazy?: boolean;
+  class?: string;
+  attrs?: Record<string, string>;
+}
+
+const { id, sizes, version = 'sq', alt, priority = false, lazy = true, class: cls, attrs = {} } = Astro.props;
+const d = pictureData(id, version);
+---
+
+<picture class:list={['foto', cls]} data-kind={d.kind} style={`--foto-bg:${d.bg}`}>
+  <source type="image/avif" srcset={d.avif} sizes={sizes} />
+  <source type="image/webp" srcset={d.webp} sizes={sizes} />
+  <img
+    src={d.src}
+    width={d.width}
+    height={d.height}
+    alt={alt ?? d.alt}
+    loading={priority || !lazy ? 'eager' : 'lazy'}
+    decoding={priority ? 'sync' : 'async'}
+    fetchpriority={priority ? 'high' : undefined}
+    onerror="this.closest('picture')?.classList.add('foto--error')"
+    {...attrs}
+  />
+</picture>

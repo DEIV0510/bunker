@@ -1,0 +1,88 @@
+---
+// Selección Bunker: sin datos de ventas no se afirma «más vendidos». Cada modelo
+// agrupa sus colorways reales; el selector (radios nativos) cambia foto, nombre
+// del color, precio y enlace. La elección no depende solo del color: el radio
+// marcado lleva borde, check y el nombre del color se escribe arriba.
+import SeccionTitulo from '@/components/SeccionTitulo.astro';
+import Foto from '@/components/Foto.astro';
+import Icono from '@/components/Icono.astro';
+import { productos, nombreCompleto, precioDe, formatoCOP, urlProducto, numero } from '@/lib/catalogo';
+import { thumb } from '@/lib/media';
+
+const items = productos.filter((p) => p.seleccion);
+---
+
+<section class="seccion sel" data-surface="ink" aria-labelledby="sel-h">
+  <div class="contenedor">
+    <SeccionTitulo
+      n="03"
+      kicker="Curaduría"
+      title="Selección Bunker"
+      id="sel-h"
+      desc="Los modelos que elegimos este mes. Cambia el color y mira cada versión."
+    />
+    <div class="sel__grid">
+      {
+        items.map((p) => {
+          const v0 = p.variantes[0];
+          const precio = precioDe(p, v0);
+          return (
+            <article class="sel__item" data-sel data-reveal>
+              <div class="sel__media">
+                {p.variantes.map((v, i) => (
+                  <div class="sel__img" data-v={v.id} hidden={i > 0}>
+                    <Foto id={v.imagenes[0]} sizes="(min-width: 1024px) 23vw, 47vw" />
+                  </div>
+                ))}
+                <span class="sel__num label">N.º {numero(p)}</span>
+              </div>
+              <div class="sel__body">
+                <p class="sel__brand label">{p.marca}</p>
+                <h3 class="sel__t">
+                  <a href={urlProducto(p)} data-sel-link>
+                    {nombreCompleto(p)}
+                  </a>
+                </h3>
+                {p.variantes.length > 1 ? (
+                  <fieldset class="swatches">
+                    <legend class="swatches__legend">
+                      Color: <strong data-sel-color>{v0.color}</strong>
+                    </legend>
+                    <div class="swatches__row">
+                      {p.variantes.map((v, i) => (
+                        <label class="swatch">
+                          <input
+                            type="radio"
+                            name={`sel-${p.slug}`}
+                            value={v.id}
+                            checked={i === 0}
+                            data-color={v.color}
+                            data-href={urlProducto(p, v)}
+                            data-precio={precioDe(p, v) ?? ''}
+                          />
+                          <img src={thumb(v.imagenes[0])} width="48" height="48" alt="" loading="lazy" decoding="async" />
+                          <span class="sr-only">{v.color}</span>
+                          <Icono name="check" size={14} class="swatch__check" />
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+                ) : (
+                  <p class="swatches__legend">
+                    Color: <strong>{v0.color}</strong>
+                  </p>
+                )}
+                <p class="sel__price" data-sel-precio data-pendiente={precio ? undefined : 'precio'}>
+                  {precio ? formatoCOP(precio) : 'Precio por confirmar'}
+                </p>
+                <a class="btn btn--outline btn--block" href={urlProducto(p)} data-sel-cta>
+                  Ver modelo<Icono name="arrow" />
+                </a>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>

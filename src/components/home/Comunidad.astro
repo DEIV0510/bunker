@@ -1,0 +1,79 @@
+---
+// Prueba social SOLO con contenido real. Mientras negocio.comunidad y
+// negocio.resenas estén vacíos, se muestran marcos numerados identificados como
+// espacio reservado y la invitación a enviar fotos. Sin testimonios ficticios.
+import SeccionTitulo from '@/components/SeccionTitulo.astro';
+import Icono from '@/components/Icono.astro';
+import Logo from '@/components/Logo.astro';
+import { negocio } from '@/data/negocio';
+import { waLink, msgComunidad } from '@/lib/whatsapp';
+
+const fotos = negocio.comunidad;
+const resenas = negocio.resenas;
+const slots = 6;
+---
+
+<section class="seccion comu" data-surface="dark" aria-labelledby="comu-h">
+  <div class="contenedor">
+    <SeccionTitulo
+      n="05"
+      kicker="Comunidad"
+      title="Bunker en la calle"
+      id="comu-h"
+      desc="Fotos reales de quienes ya compraron, publicadas con su permiso."
+    />
+    {
+      fotos.length > 0 ? (
+        <ul class="comu__grid">
+          {fotos.map((f) => (
+            <li class="comu__slot comu__slot--foto">
+              <img src={f.imagen} alt={f.alt} loading="lazy" decoding="async" width="600" height="600" />
+              {f.credito && <span class="label">{f.credito}</span>}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <ul class="comu__grid" data-pendiente="fotos de clientes">
+          {Array.from({ length: slots }, (_, i) => (
+            <li class="comu__slot" aria-hidden={i > 0 ? 'true' : undefined}>
+              <span class="comu__n label">#{String(i + 1).padStart(2, '0')}</span>
+              <Logo variant="simbolo" class="comu__sym" />
+              {i === 0 && <span class="comu__empty">Espacio reservado para fotos de clientes reales</span>}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    {
+      resenas.length > 0 && (
+        <ul class="comu__resenas">
+          {resenas.map((r) => (
+            <li>
+              <blockquote>
+                <p>{r.texto}</p>
+              </blockquote>
+              <p class="label">
+                {r.autor} · {r.fuente}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    <div class="comu__cta" data-reveal>
+      <p>¿Ya tienes tus pares del Bunker? Mándanos tu foto y, con tu permiso, la publicamos aquí.</p>
+      <div class="comu__btns">
+        <a class="btn btn--primary btn--lg" href={waLink(msgComunidad())} target="_blank" rel="noopener">
+          <Icono name="camera" />Enviar mi foto
+        </a>
+        {
+          negocio.redes.instagram && (
+            <a class="btn btn--ghost btn--lg" href={negocio.redes.instagram} target="_blank" rel="noopener">
+              <Icono name="instagram" />Síguenos en Instagram
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>

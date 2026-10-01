@@ -1,0 +1,105 @@
+---
+import Logo from '@/components/Logo.astro';
+import Icono from '@/components/Icono.astro';
+import { categorias, marcas } from '@/lib/catalogo';
+import { negocio, pagosVisibles } from '@/data/negocio';
+import { waLink, msgGeneral } from '@/lib/whatsapp';
+
+const year = new Date().getFullYear();
+const redes = [
+  negocio.redes.instagram && { href: negocio.redes.instagram, t: 'Instagram', icon: 'instagram' as const },
+  negocio.redes.tiktok && { href: negocio.redes.tiktok, t: 'TikTok', icon: 'tiktok' as const },
+].filter(Boolean) as { href: string; t: string; icon: 'instagram' | 'tiktok' }[];
+---
+
+<footer class="ftr" data-surface="dark">
+  <div class="contenedor ftr__grid">
+    <div class="ftr__brand">
+      <a href="/" aria-label="BUNKERSNEAKERS, ir al inicio"><Logo class="ftr__logo" /></a>
+      <p>Sneakers importados en Bogotá. Clásicos que no fallan y lo que está sonando en la calle.</p>
+      <a class="btn btn--primary" href={waLink(msgGeneral())} target="_blank" rel="noopener">
+        <Icono name="whatsapp" />{negocio.whatsapp.visible}
+      </a>
+    </div>
+
+    <nav class="ftr__col" aria-labelledby="ftr-cat">
+      <h2 class="ftr__h" id="ftr-cat">Categorías</h2>
+      <ul>
+        <li><a href="/sneakers/">Todos los sneakers</a></li>
+        {categorias.map((c) => <li><a href={`/categoria/${c.slug}/`}>{c.nombre}</a></li>)}
+      </ul>
+    </nav>
+
+    <nav class="ftr__col" aria-labelledby="ftr-marcas">
+      <h2 class="ftr__h" id="ftr-marcas">Marcas</h2>
+      <ul>
+        {marcas.map((m) => <li><a href={`/marca/${m.slug}/`}>{m.nombre}</a></li>)}
+      </ul>
+    </nav>
+
+    <nav class="ftr__col" aria-labelledby="ftr-ayuda">
+      <h2 class="ftr__h" id="ftr-ayuda">Ayuda</h2>
+      <ul>
+        <li><a href="/guia-de-tallas/">Guía de tallas</a></li>
+        <li><a href="/preguntas-frecuentes/">Preguntas frecuentes</a></li>
+        <li><a href="/por-mayor/">Compra al por mayor</a></li>
+        <li><a href="/politicas/envios/">Envíos</a></li>
+        <li><a href="/politicas/cambios/">Cambios y devoluciones</a></li>
+      </ul>
+    </nav>
+
+    <div class="ftr__col">
+      <h2 class="ftr__h">Visítanos</h2>
+      <p class="ftr__dato">
+        <Icono name="pin" size={18} />
+        <span>
+          {negocio.ubicacion.lugar}
+          {negocio.ubicacion.local && <>, {negocio.ubicacion.local}</>}
+          <br />{negocio.ubicacion.ciudad}, {negocio.ubicacion.pais}
+        </span>
+      </p>
+      {negocio.ubicacion.horario && <p class="ftr__dato">{negocio.ubicacion.horario}</p>}
+      {
+        !negocio.ubicacion.local && (
+          <p class="ftr__dato ftr__muted" data-pendiente="local y horario">
+            Escríbenos antes de ir y te indicamos cómo llegar al local.
+          </p>
+        )
+      }
+      {
+        redes.length > 0 && (
+          <ul class="ftr__redes">
+            {redes.map((r) => (
+              <li>
+                <a class="icon-btn" href={r.href} target="_blank" rel="noopener">
+                  <Icono name={r.icon} />
+                  <span class="sr-only">{r.t}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      <h2 class="ftr__h ftr__h--sp">Medios de pago</h2>
+      <ul class="ftr__pagos">
+        {pagosVisibles.map((p) => <li title={p.detalle}>{p.nombre}{p.estado === 'consultar' && <sup>*</sup>}</li>)}
+      </ul>
+      <p class="ftr__muted ftr__small">* Sujeto a cobertura o aprobación. Te confirmamos por WhatsApp.</p>
+    </div>
+  </div>
+
+  <div class="contenedor ftr__bottom">
+    <p>
+      © {year} {negocio.nombre} · {negocio.ubicacion.ciudad}, Colombia
+      {negocio.legal.razonSocial && <> · {negocio.legal.razonSocial}</>}
+      {negocio.legal.nit && <> · NIT {negocio.legal.nit}</>}
+    </p>
+    <ul>
+      <li><a href="/politicas/privacidad/">Privacidad</a></li>
+      <li><a href="/politicas/terminos/">Términos</a></li>
+      <li><a href="/politicas/envios/">Envíos</a></li>
+      <li><a href="/politicas/cambios/">Cambios</a></li>
+    </ul>
+  </div>
+  <p class="ftr__giant" aria-hidden="true">BUNKER</p>
+</footer>

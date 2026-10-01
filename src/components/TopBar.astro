@@ -1,0 +1,36 @@
+---
+// Franja comercial superior. Solo muestra información configurada en negocio.ts.
+// El marquee se mueve con transform (sin saltos), se pausa al pasar el cursor o
+// con el foco, y queda quieto con prefers-reduced-motion.
+import { negocio, textos } from '@/data/negocio';
+import { productos, nombreCompleto, urlProducto } from '@/lib/catalogo';
+
+const lanzamiento = productos.find((p) => p.lanzamiento && p.variantes.length > 1);
+const items = [
+  textos.envioBogota && { t: textos.envioBogota, href: '/politicas/envios/' },
+  { t: textos.pagosLinea, href: '/preguntas-frecuentes/#pagos' },
+  { t: `Atención por WhatsApp ${negocio.whatsapp.visible}`, href: `https://wa.me/${negocio.whatsapp.numero}`, ext: true },
+  lanzamiento && {
+    t: `Lanzamiento: ${nombreCompleto(lanzamiento)} en ${lanzamiento.variantes.length} colores`,
+    href: urlProducto(lanzamiento),
+  },
+].filter(Boolean) as { t: string; href: string; ext?: boolean }[];
+---
+
+<aside class="topbar" aria-label="Información de compra" data-surface="dark">
+  <div class="topbar__track" data-marquee>
+    {
+      [0, 1].map((copy) => (
+        <ul class="topbar__list" aria-hidden={copy ? 'true' : undefined}>
+          {items.map((it) => (
+            <li>
+              <a href={it.href} tabindex={copy ? -1 : undefined} {...(it.ext ? { target: '_blank', rel: 'noopener' } : {})}>
+                {it.t}
+              </a>
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</aside>

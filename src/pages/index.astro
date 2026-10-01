@@ -1,0 +1,57 @@
+---
+import Base from '@/layouts/Base.astro';
+import Hero from '@/components/home/Hero.astro';
+import Confianza from '@/components/home/Confianza.astro';
+import Lanzamientos from '@/components/home/Lanzamientos.astro';
+import Categorias from '@/components/home/Categorias.astro';
+import Seleccion from '@/components/home/Seleccion.astro';
+import Modalidades from '@/components/home/Modalidades.astro';
+import Comunidad from '@/components/home/Comunidad.astro';
+import Tallas from '@/components/home/Tallas.astro';
+import SeccionTitulo from '@/components/SeccionTitulo.astro';
+import Faq from '@/components/Faq.astro';
+import { faqs } from '@/data/negocio';
+import { pictureData } from '@/lib/media';
+import '@/styles/home.css';
+
+const hero = pictureData('af1-triple-white', 'full');
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs
+    .filter((f) => f.confirmada)
+    .map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+
+<Base
+  title="BUNKERSNEAKERS | Sneakers importados en Bogotá: Jordan, Nike, adidas"
+  description="Sneakers importados en Bogotá: Jordan, Nike, adidas, New Balance y Vans. Clásicos y streetwear con guía de tallas oficial. Compra en la web o por WhatsApp."
+  page="home"
+  intro
+  jsonLd={[faqLd]}
+>
+  <Fragment slot="head">
+    <link rel="preload" as="image" type="image/avif" imagesrcset={hero.avif} imagesizes="(min-width: 1024px) 38vw, 100vw" fetchpriority="high" />
+  </Fragment>
+  <Hero />
+  <Confianza />
+  <Lanzamientos />
+  <Categorias />
+  <Seleccion />
+  <Modalidades />
+  <Comunidad />
+  <Tallas />
+  <section class="seccion faq-sec" data-surface="light" aria-labelledby="faq-h">
+    <div class="contenedor faq-sec__grid">
+      <SeccionTitulo
+        n="07"
+        kicker="Antes de comprar"
+        title="Preguntas frecuentes"
+        id="faq-h"
+        link={{ href: '/preguntas-frecuentes/', t: 'Todas las respuestas' }}
+      />
+      <Faq />
+    </div>
+  </section>
+</Base>

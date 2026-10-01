@@ -1,0 +1,55 @@
+---
+// Barra de confianza: solo políticas configuradas; lo no confirmado remite a WhatsApp.
+import Icono from '@/components/Icono.astro';
+import { negocio, pagosVisibles } from '@/data/negocio';
+
+const activos = pagosVisibles.filter((p) => p.estado === 'activo').map((p) => p.nombre.toLowerCase());
+const consultar = pagosVisibles.filter((p) => p.estado === 'consultar').map((p) => p.nombre);
+
+const items = [
+  {
+    icon: 'truck' as const,
+    t: negocio.envios.gratisBogota ? 'Envío gratis en Bogotá' : 'Envíos a toda Colombia',
+    d: negocio.envios.costoNacional ?? 'Al resto del país, costo y tiempo según tu ciudad.',
+    href: '/politicas/envios/',
+    pendiente: negocio.envios.condicionesBogota ? undefined : 'condiciones de envío',
+  },
+  {
+    icon: 'card' as const,
+    t: `Paga por ${activos.join(' o ')}`,
+    d: consultar.length ? `${consultar.join(' y ')}: según cobertura o aprobación.` : 'Te enviamos los datos por WhatsApp.',
+    href: '/preguntas-frecuentes/#pagos',
+  },
+  {
+    icon: 'chat' as const,
+    t: 'Atención personalizada',
+    d: 'Te ayudamos por WhatsApp a elegir modelo y talla.',
+    href: `https://wa.me/${negocio.whatsapp.numero}`,
+    ext: true,
+  },
+  {
+    icon: 'ruler' as const,
+    t: 'Guía de tallas y cambios',
+    d: 'Tablas oficiales por marca. Condiciones de cambio por WhatsApp.',
+    href: '/guia-de-tallas/',
+    pendiente: negocio.cambios.politica ? undefined : 'política de cambios',
+  },
+];
+---
+
+<section class="confianza" data-surface="light" aria-label="Por qué comprar en el Bunker">
+  <ul class="contenedor confianza__grid">
+    {
+      items.map((it, i) => (
+        <li class="confianza__item" data-reveal data-pendiente={it.pendiente}>
+          <a href={it.href} {...(it.ext ? { target: '_blank', rel: 'noopener' } : {})}>
+            <span class="confianza__n label">0{i + 1}</span>
+            <Icono name={it.icon} size={28} />
+            <span class="confianza__t">{it.t}</span>
+            <span class="confianza__d">{it.d}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>

@@ -1,0 +1,31 @@
+---
+// Migas de pan visibles + datos estructurados BreadcrumbList.
+interface Props {
+  items: { t: string; href?: string }[];
+}
+const { items } = Astro.props;
+const site = Astro.site;
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((it, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: it.t,
+    ...(it.href && site ? { item: new URL(it.href, site).href } : {}),
+  })),
+};
+---
+
+<nav aria-label="Ruta de navegación">
+  <ol class="migas">
+    {
+      items.map((it, i) => (
+        <li>
+          {it.href && i < items.length - 1 ? <a href={it.href}>{it.t}</a> : <span aria-current="page">{it.t}</span>}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+<script type="application/ld+json" set:html={JSON.stringify(ld)} />

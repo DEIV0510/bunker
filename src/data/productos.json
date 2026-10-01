@@ -1,0 +1,220 @@
+{
+  "_ayuda": "Catálogo de BUNKERSNEAKERS. precio: entero en COP sin puntos (285000) o null = 'Precio por confirmar'. tallas: null = sin confirmar (se muestran tallas de referencia EU y se pide disponibilidad por WhatsApp) o una lista [{\"eu\": \"40\", \"disponible\": true}]. Una variante puede tener su propio precio/tallas; si no, hereda las del modelo. lanzamiento/seleccion: true para que aparezca en esas secciones. Tras agregar fotos nuevas: npm run images.",
+  "productos": [
+    {
+      "slug": "nike-nocta-glide",
+      "marca": "Nike",
+      "modelo": "NOCTA Glide",
+      "categorias": ["streetwear"],
+      "lanzamiento": true,
+      "seleccion": false,
+      "descripcion": "La colaboración de Drake con Nike, inspirada en el básquet de los 2000: textura tipo fibra de carbono, cápsulas de amortiguación visibles en la entresuela y las letras N-I-K-E en los ojales.",
+      "precio": null,
+      "tallas": null,
+      "variantes": [
+        { "id": "black-bright-crimson", "color": "Black / Bright Crimson", "tono": ["#111111", "#ff3b2f"], "imagenes": ["nocta-glide-black-crimson"] },
+        { "id": "black-white", "color": "Black / White", "tono": ["#111111", "#f2f2f2"], "imagenes": ["nocta-glide-black-white"] },
+        { "id": "triple-black", "color": "Triple Black", "tono": ["#111111", "#2a2a2a"], "imagenes": ["nocta-glide-triple-black"] }
+      ]
+    },
+    {
+      "slug": "air-jordan-3-retro",
+      "marca": "Jordan",
+      "modelo": "Air Jordan 3 Retro",
+      "categorias": ["clasicos"],
+      "lanzamiento": true,
+      "seleccion": false,
+      "descripcion": "El diseño de Tinker Hatfield de 1988: estampado elefante, unidad Air visible en el talón y el Jumpman en la lengüeta.",
+      "precio": null,
+      "tallas": null,
+      "variantes": [
+        { "id": "valentines-day", "color": "Valentine's Day", "tono": ["#f6c9c0", "#9e1b32"], "imagenes": ["aj3-valentines-day"] },
+        { "id": "white-cobalt-bliss", "color": "White / Cobalt Bliss", "nota": "Tallaje GS (juvenil)", "tono": ["#f4f4f4", "#8fa7cc"], "imagenes": ["aj3-cobalt-bliss", "aj3-cobalt-bliss-talon", "aj3-cobalt-bliss-suela"] }
+      ]
+    },
+    {
+      "slug": "nike-air-max-portal",
+      "marca": "Nike",
+      "modelo": "Air Max Portal",
+      "categorias": ["streetwear"],
+      "lanzamiento": true,
+      "seleccion": false,
+      "descripcion": "Una de las siluetas recientes de la familia Air Max: malla con líneas onduladas, unidad Air visible en el talón y una suela que levanta el perfil.",
+      "precio": null,
+      "tallas": null,
+      "variantes": [
+        { "id": "sail-black", "color": "Sail / Black", "tono": ["#efe9dc", "#111111"], "imagenes": ["air-max-portal"] }
+      ]
+    },
+    {
+      "slug": "air-jordan-12-retro",
+      "marca": "Jordan",
+      "modelo": "Air Jordan 12 Retro",
+      "categorias": ["clasicos", "deportivos"],
+      "lanzamiento": false,
+      "seleccion": true,
+      "descripcion": "El Jordan de 1996: costuras que irradian desde la puntera, cuero granulado y amortiguación Zoom Air de punta a talón.",
+      "precio": null,
+      "tallas": null,
+      "variantes": [
+        { "id": "flu-game", "color": "Flu Game", "tono": ["#111111", "#c8102e"], "imagenes": ["aj12-flu-game"] },
+        { "id": "gamma-blue", "color": "Gamma Blue", "tono": ["#111111", "#3fc1d6"], "imagenes": ["aj12-gamma-blue", "aj12-gamma-blue-medial", "aj12-gamma-blue-frente", "aj12-gamma-blue-talon"] }
+      ]
+    },
+    {
+      "slug": "adidas-superstar",
+      "marca": "adidas",
+      "modelo": "Superstar",
+      "categorias": ["clasicos"],
+      "lanzamiento": false,
+      "seleccion": true,
+      "descripcion": "Puntera de concha y tres franjas: el clásico de adidas que nació en las canchas de básquet en 1969.",
+      "precio": null,
+      "tallas": null,
+      "variantes": [
+        { "id": "core-black", "color": "Core Black / Cloud White", "tono": ["#111111", "#ffffff"], "imagenes": ["superstar-black"] },
+        { "id": "azul-monograma", "color": "Azul monograma", "tono": ["#8ab4d6", "#f2d22e"], "imagenes": ["superstar-azul"] }
+      ]
+    },
+    {
+      "slug": "nike-sacai-vaporwaffle",
+      "marca": "Nike",
+      "modelo": "sacai VaporWaffle",
+      "categorias": ["streetwear"],
+      "lanzamiento": false,
+      "seleccion": true,
+      "descripcion": "El híbrido de sacai con Nike: doble lengüeta, doble swoosh y suela Waffle apilada, en ante, malla y nylon.",
+      "precio": null,
+      "tallas": null,
+      "variantes": [
+        { "id": "black-white", "color": "Black / White", "tono": ["#1a1a1a", "#f2f2f2"], "imagenes": ["sacai-vaporwaffle"] }
+      ]
+    },
+    {
+      "slug": "nike-sb-dunk-low-parra",
+      "marca": "Nike",
+      "modelo": "SB Dunk Low x Parra",
+      "categorias": ["streetwear"],
+      "lanzamiento": false,
+      "seleccion": true,
+      "descripcion": "La versión del artista Parra: cuero blanco, swoosh bordado en rosa, rojo y azul, y cordones extra de colores.",
+      "precio": null,
+      "tallas": null,
+      "variantes": [
+        { "id": "white-multi", "color": "White / Multicolor", "tono": ["#ffffff", "#e8577a"], "imagenes": ["sb-dunk-parra"] }
+      ]
+    },
+    {
+      "slug": "nike-air-force-1-low-07",
+      "marca": "Nike",
+      "modelo": "Air Force 1 Low '07",
+      "categorias": ["clasicos"],
+      "lanzamiento": false,
+      "seleccion": false,
+      "descripcion": "El clásico de cancha que se volvió uniforme de calle: capellada en cuero, suela de copa y unidad Air en el talón. En blanco total combina con todo.",
+      "precio": null,
+      "tallas": null,
+      "variantes": [
+        { "id": "triple-white", "color": "Triple White", "tono": ["#ffffff", "#e9e9e9"], "imagenes": ["af1-triple-white"] }
+      ]
+    },
+    {
+      "slug": "nike-air-force-1-low-certified-lover-boy",
+      "marca": "Nike",
+      "modelo": "Air Force 1 Low x NOCTA «Certified Lover Boy»",
+      "categorias": ["streetwear"],
+      "lanzamiento": false,
+      "seleccion": false,
+      "descripcion": "La edición de Drake (NOCTA) para la era Certified Lover Boy: cuero granulado blanco y la frase «Love you forever» en relieve sobre la entresuela.",
+      "precio": null,
+      "tallas": null,
+      "variantes": [
+        { "id": "white", "color": "White", "tono": ["#f5f5f5", "#dcdcdc"], "imagenes": ["af1-certified-lover-boy"] }
+      ]
+    },
+    {
+      "slug": "nike-air-max-90",
+      "marca": "Nike",
+      "modelo": "Air Max 90",
+      "categorias": ["clasicos"],
+      "lanzamiento": false,
+      "seleccion": false,
+      "descripcion": "Air visible en el talón, paneles en cuero y la silueta de running de 1990 que nunca salió de la calle.",
+      "precio": null,
+      "tallas": null,
+      "variantes": [
+        { "id": "triple-white", "color": "Triple White", "tono": ["#ffffff", "#e3e3e3"], "imagenes": ["am90-triple-white"] }
+      ]
+    },
+    {
+      "slug": "air-jordan-1-mid-se",
+      "marca": "Jordan",
+      "modelo": "Air Jordan 1 Mid SE",
+      "categorias": ["clasicos"],
+      "lanzamiento": false,
+      "seleccion": false,
+      "descripcion": "La caña media del Jordan 1 en tonos arena y salmón, con texturas mixtas y el logo Wings en relieve.",
+      "precio": null,
+      "tallas": null,
+      "variantes": [
+        { "id": "arena-salmon", "color": "Arena / Salmón", "tono": ["#e9dccb", "#e7a98f"], "imagenes": ["aj1-mid-se"] }
+      ]
+    },
+    {
+      "slug": "vans-knu-skool",
+      "marca": "Vans",
+      "modelo": "Knu Skool",
+      "categorias": ["streetwear"],
+      "lanzamiento": false,
+      "seleccion": false,
+      "descripcion": "El skate de los 90 de vuelta: lengüeta acolchada gruesa, cordones anchos y la franja Sidestripe en relieve.",
+      "precio": null,
+      "tallas": null,
+      "variantes": [
+        { "id": "black-white", "color": "Black / True White", "tono": ["#111111", "#ffffff"], "imagenes": ["vans-knu-skool"] }
+      ]
+    },
+    {
+      "slug": "new-balance-fresh-foam-x-more-trail-v3",
+      "marca": "New Balance",
+      "modelo": "Fresh Foam X More Trail v3",
+      "categorias": ["deportivos"],
+      "lanzamiento": false,
+      "seleccion": false,
+      "descripcion": "Amortiguación Fresh Foam X de alto volumen, puntera protegida y suela de tracción para trail. Para correr fuera del asfalto o caminar todo el día.",
+      "precio": null,
+      "tallas": null,
+      "variantes": [
+        { "id": "oliva-amarillo", "color": "Oliva / Amarillo", "tono": ["#3d4a3a", "#f2c230"], "imagenes": ["nb-more-trail-v3"] }
+      ]
+    },
+    {
+      "slug": "timberland-supreme-6-inch-diamond-plate",
+      "marca": "Timberland",
+      "modelo": "6-Inch Premium x Supreme «Diamond Plate»",
+      "categorias": ["botas", "streetwear"],
+      "lanzamiento": false,
+      "seleccion": false,
+      "descripcion": "La bota de 6 pulgadas de Timberland con Supreme: nobuk color trigo con relieve de placa diamante, cuello acolchado y suela de goma con tacos.",
+      "precio": null,
+      "tallas": null,
+      "variantes": [
+        { "id": "wheat", "color": "Wheat", "tono": ["#b8823f", "#1a1a1a"], "imagenes": ["timberland-supreme"] }
+      ]
+    },
+    {
+      "slug": "louis-vuitton-lv-skate",
+      "marca": "Louis Vuitton",
+      "modelo": "LV Skate Sneaker",
+      "categorias": ["streetwear"],
+      "lanzamiento": false,
+      "seleccion": false,
+      "descripcion": "Volumen de skate de los 2000, cordones gruesos tipo cuerda y flores Monogram en relieve, todo en morado.",
+      "precio": null,
+      "tallas": null,
+      "variantes": [
+        { "id": "purple", "color": "Purple", "tono": ["#7b4fd1", "#b79be8"], "imagenes": ["lv-skate-purple"] }
+      ]
+    }
+  ]
+}

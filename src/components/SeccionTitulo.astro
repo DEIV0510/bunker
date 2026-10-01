@@ -1,0 +1,31 @@
+---
+// Encabezado de sección estilo etiqueta de inventario: número, titular grande y
+// la «tronera» verde que se traza al entrar en pantalla.
+import Icono from '@/components/Icono.astro';
+
+interface Props {
+  n: string;
+  kicker: string;
+  title: string;
+  id: string;
+  desc?: string;
+  link?: { href: string; t: string };
+  hx?: 'h1' | 'h2';
+}
+const { n, kicker, title, id, desc, link, hx: H = 'h2' } = Astro.props;
+---
+
+<header class="sec-head" data-reveal>
+  <p class="sec-head__k label"><span class="sec-head__n">{n}</span>{kicker}</p>
+  <H class="sec-head__t" id={id}>{title}</H>
+  <span class="slit" aria-hidden="true"></span>
+  {desc && <p class="sec-head__d">{desc}</p>}
+  {
+    link && (
+      <a class="link-arrow sec-head__link" href={link.href}>
+        {link.t}
+        <Icono name="arrow" size={20} />
+      </a>
+    )
+  }
+</header>

@@ -1,0 +1,114 @@
+---
+// Diálogos nativos (<dialog>): foco atrapado, Esc para cerrar, fondo inerte.
+// - Menú móvil: hoja inferior (zona del pulgar).
+// - Buscador: resultados al instante con el catálogo embebido.
+// - Carrito: panel lateral con tallas, cantidades y subtotal.
+import Logo from '@/components/Logo.astro';
+import Icono from '@/components/Icono.astro';
+import { categorias, marcas } from '@/lib/catalogo';
+import { negocio, textos } from '@/data/negocio';
+import { waLink, msgGeneral } from '@/lib/whatsapp';
+---
+
+<dialog class="dlg dlg--sheet" id="dlg-menu" aria-labelledby="menu-titulo" data-surface="dark">
+  <div class="dlg__head">
+    <Logo class="dlg__logo" />
+    <h2 class="sr-only" id="menu-titulo">Menú</h2>
+    <button class="icon-btn" type="button" data-cerrar>
+      <Icono name="close" /><span class="sr-only">Cerrar menú</span>
+    </button>
+  </div>
+  <nav class="menu" aria-label="Menú móvil">
+    <ul class="menu__main">
+      <li><a href="/sneakers/"><span class="menu__n">00</span>Todos los sneakers<Icono name="arrow" /></a></li>
+      {
+        categorias.map((c, i) => (
+          <li>
+            <a href={`/categoria/${c.slug}/`}>
+              <span class="menu__n">{String(i + 1).padStart(2, '0')}</span>
+              {c.nombre}
+              <Icono name="arrow" />
+            </a>
+          </li>
+        ))
+      }
+      <li><a href="/por-mayor/"><span class="menu__n">{String(categorias.length + 1).padStart(2, '0')}</span>Compra al por mayor<Icono name="arrow" /></a></li>
+    </ul>
+    <p class="menu__label">Marcas</p>
+    <ul class="menu__chips">
+      {marcas.map((m) => <li><a class="chip" href={`/marca/${m.slug}/`}>{m.nombre}</a></li>)}
+    </ul>
+    <ul class="menu__sec">
+      <li><a href="/guia-de-tallas/">Guía de tallas</a></li>
+      <li><a href="/preguntas-frecuentes/">Preguntas frecuentes</a></li>
+      <li><a href="/politicas/envios/">Envíos</a></li>
+      <li><a href="/politicas/cambios/">Cambios</a></li>
+    </ul>
+  </nav>
+  <div class="dlg__foot">
+    <a class="btn btn--primary btn--block" href={waLink(msgGeneral())} target="_blank" rel="noopener">
+      <Icono name="whatsapp" />Hablar por WhatsApp
+    </a>
+    <p class="dlg__note"><Icono name="pin" size={16} />{negocio.ubicacion.lugar}, {negocio.ubicacion.ciudad}</p>
+  </div>
+</dialog>
+
+<dialog class="dlg dlg--top" id="dlg-buscar" aria-labelledby="buscar-titulo" data-surface="dark">
+  <form class="buscar" action="/sneakers/" method="get" role="search" data-buscar>
+    <h2 class="sr-only" id="buscar-titulo">Buscar sneakers</h2>
+    <label class="sr-only" for="buscar-q">Marca, modelo o color</label>
+    <Icono name="search" class="buscar__icon" />
+    <input
+      class="buscar__input"
+      id="buscar-q"
+      name="q"
+      type="search"
+      placeholder="Busca: Jordan, NOCTA, blanco…"
+      autocomplete="off"
+      enterkeyhint="search"
+      aria-controls="buscar-res"
+    />
+    <button class="icon-btn" type="button" data-cerrar>
+      <Icono name="close" /><span class="sr-only">Cerrar buscador</span>
+    </button>
+  </form>
+  <div class="buscar__body">
+    <p class="buscar__status" aria-live="polite" data-buscar-status></p>
+    <ul class="buscar__res" id="buscar-res" data-buscar-res></ul>
+    <div class="buscar__sug" data-buscar-sug>
+      <p class="menu__label">Explora</p>
+      <ul class="menu__chips">
+        {categorias.map((c) => <li><a class="chip" href={`/categoria/${c.slug}/`}>{c.corto}</a></li>)}
+        {marcas.slice(0, 4).map((m) => <li><a class="chip" href={`/marca/${m.slug}/`}>{m.nombre}</a></li>)}
+      </ul>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="dlg dlg--side" id="dlg-carrito" aria-labelledby="carrito-titulo" data-surface="light">
+  <div class="dlg__head">
+    <h2 class="dlg__title" id="carrito-titulo">Tu carrito <span data-cart-head-count></span></h2>
+    <button class="icon-btn" type="button" data-cerrar>
+      <Icono name="close" /><span class="sr-only">Cerrar carrito</span>
+    </button>
+  </div>
+  <div class="cart" data-cart>
+    <div class="cart__empty" data-cart-empty>
+      <p class="cart__empty-t">Tu carrito está vacío.</p>
+      <p>Elige un modelo, selecciona tu talla y agrégalo.</p>
+      <a class="btn btn--dark" href="/sneakers/">Ver sneakers<Icono name="arrow" /></a>
+    </div>
+    <ul class="cart__lines" data-cart-lines></ul>
+  </div>
+  <div class="dlg__foot cart__foot" data-cart-foot hidden>
+    <dl class="cart__sum">
+      <div><dt>Subtotal</dt><dd data-cart-subtotal>—</dd></div>
+      <div>
+        <dt>Envío</dt>
+        <dd>{textos.envioBogota ? 'Gratis en Bogotá · otras ciudades se cotizan' : 'Se cotiza según tu ciudad'}</dd>
+      </div>
+    </dl>
+    <p class="cart__note" data-cart-pending hidden></p>
+    <a class="btn btn--primary btn--block" href="/carrito/">Continuar al pedido<Icono name="arrow" /></a>
+  </div>
+</dialog>

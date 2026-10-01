@@ -1,0 +1,28 @@
+---
+import PaginaSimple from '@/components/PaginaSimple.astro';
+import Faq from '@/components/Faq.astro';
+import Icono from '@/components/Icono.astro';
+import { faqs } from '@/data/negocio';
+import { waLink, msgGeneral } from '@/lib/whatsapp';
+
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.filter((f) => f.confirmada).map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+
+<PaginaSimple
+  title="Preguntas frecuentes: compras, pagos y envíos | BUNKERSNEAKERS"
+  description="Cómo comprar en BUNKERSNEAKERS: medios de pago, Addi, envíos, contraentrega, cambios de talla, disponibilidad y compras al por mayor."
+  h1="Preguntas frecuentes"
+  kicker="Antes de comprar"
+  migas={[{ t: 'Inicio', href: '/' }, { t: 'Preguntas frecuentes' }]}
+  jsonLd={[ld]}
+>
+  <Faq hx="h2" />
+  <p class="pagina__cta">
+    ¿No encuentras tu respuesta?
+    <a class="btn btn--dark" href={waLink(msgGeneral())} target="_blank" rel="noopener"><Icono name="whatsapp" />Escríbenos</a>
+  </p>
+</PaginaSimple>

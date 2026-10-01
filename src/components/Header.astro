@@ -1,0 +1,60 @@
+---
+import Logo from '@/components/Logo.astro';
+import Icono from '@/components/Icono.astro';
+import { waLink, msgGeneral } from '@/lib/whatsapp';
+
+const path = Astro.url.pathname;
+const nav = [
+  { href: '/sneakers/', t: 'Sneakers' },
+  { href: '/categoria/lanzamientos/', t: 'Lanzamientos' },
+  { href: '/categoria/clasicos/', t: 'Clásicos' },
+  { href: '/categoria/streetwear/', t: 'Streetwear' },
+  { href: '/categoria/deportivos/', t: 'Deportivos' },
+  { href: '/por-mayor/', t: 'Por mayor' },
+];
+const current = (href: string) => (path === href || (href !== '/sneakers/' && path.startsWith(href)) ? 'page' : undefined);
+---
+
+<header class="hdr" data-surface="dark" data-hdr>
+  <div class="hdr__in contenedor">
+    <a class="hdr__logo" href="/" aria-label="BUNKERSNEAKERS, ir al inicio">
+      <Logo class="hdr__logo-full" />
+      <Logo variant="simbolo" class="hdr__logo-sym" />
+    </a>
+
+    <nav class="hdr__nav" aria-label="Principal">
+      <ul>
+        {
+          nav.map((n) => (
+            <li>
+              <a href={n.href} aria-current={current(n.href)}>
+                {n.t}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="hdr__acts">
+      <button class="icon-btn" type="button" data-abrir="buscar" aria-haspopup="dialog" aria-controls="dlg-buscar">
+        <Icono name="search" />
+        <span class="sr-only">Buscar sneakers</span>
+      </button>
+      <a class="icon-btn hdr__wa" href={waLink(msgGeneral())} target="_blank" rel="noopener">
+        <Icono name="whatsapp" />
+        <span class="hdr__wa-txt">WhatsApp</span>
+        <span class="sr-only"> (se abre en WhatsApp)</span>
+      </a>
+      <button class="icon-btn hdr__cart" type="button" data-abrir="carrito" aria-haspopup="dialog" aria-controls="dlg-carrito">
+        <Icono name="bag" />
+        <span class="hdr__count" data-cart-count hidden>0</span>
+        <span class="sr-only" data-cart-label>Carrito, vacío</span>
+      </button>
+      <button class="icon-btn hdr__menu" type="button" data-abrir="menu" aria-haspopup="dialog" aria-controls="dlg-menu">
+        <Icono name="menu" />
+        <span class="sr-only">Abrir menú</span>
+      </button>
+    </div>
+  </div>
+</header>

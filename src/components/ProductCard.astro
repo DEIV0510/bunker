@@ -1,0 +1,75 @@
+---
+// Tarjeta de producto: foto cuadrada grande, poco texto, precio visible y acceso
+// rápido a WhatsApp. Si la variante tiene más fotos, la 2.ª aparece al pasar el
+// cursor (solo con puntero fino; en móvil no se depende del hover).
+import Foto from '@/components/Foto.astro';
+import Icono from '@/components/Icono.astro';
+import { type Producto, type Variante, nombreCompleto, precioDe, tallasDe, formatoCOP, urlProducto, numero } from '@/lib/catalogo';
+import { waLink, msgProducto } from '@/lib/whatsapp';
+
+interface Props {
+  producto: Producto;
+  variante?: Variante;
+  /** Etiqueta comercial: solo cuando corresponde (lanzamiento real en el catálogo). */
+  etiqueta?: string | null;
+  sizes?: string;
+  priority?: boolean;
+  hx?: 'h2' | 'h3';
+}
+
+const {
+  producto: p,
+  variante,
+  etiqueta = null,
+  sizes = '(min-width: 1200px) 22vw, (min-width: 760px) 31vw, 47vw',
+  priority = false,
+  hx: H = 'h3',
+} = Astro.props;
+const v = variante ?? p.variantes[0];
+const precio = precioDe(p, v);
+const tallas = tallasDe(p, v);
+const nombre = nombreCompleto(p);
+const url = urlProducto(p, variante);
+const otras = p.variantes.length - 1;
+const disponibles = tallas?.filter((t) => t.disponible).map((t) => t.eu) ?? [];
+---
+
+<article class="card" data-surface-inherit>
+  <div class="card__media">
+    <Foto id={v.imagenes[0]} sizes={sizes} priority={priority} />
+    {v.imagenes[1] && <Foto id={v.imagenes[1]} sizes={sizes} class="card__alt" alt="" />}
+    {etiqueta && <span class="card__tag">{etiqueta}</span>}
+  </div>
+  <div class="card__body">
+    <p class="card__meta">
+      <span>{p.marca}</span>
+      <span class="card__num">N.º {numero(p)}</span>
+    </p>
+    <H class="card__title">
+      <a class="card__link" href={url}>{nombre}</a>
+    </H>
+    <p class="card__color">
+      {
+        !variante && otras > 0 && (
+          <span class="card__dots" aria-hidden="true">
+            {p.variantes.map((x) => (
+              <span class="dot" style={`--a:${x.tono[0]};--b:${x.tono[1]}`} />
+            ))}
+          </span>
+        )
+      }
+      {v.color}
+      {!variante && otras > 0 && <span class="card__more">+{otras} {otras === 1 ? 'color' : 'colores'}</span>}
+    </p>
+    <p class:list={['card__price', !precio && 'card__price--tbd']} data-pendiente={precio ? undefined : 'precio'}>
+      {precio ? formatoCOP(precio) : 'Precio por confirmar'}
+    </p>
+    <p class="card__sizes" data-pendiente={tallas ? undefined : 'tallas'}>
+      {tallas ? (disponibles.length ? `Tallas EU ${disponibles.join(' · ')}` : 'Agotado por ahora') : 'Tallas: consulta disponibilidad'}
+    </p>
+  </div>
+  <a class="card__wa" href={waLink(msgProducto(nombre, v.color, null, precio))} target="_blank" rel="noopener">
+    <Icono name="whatsapp" size={20} />
+    <span class="sr-only">Consultar {nombre} {v.color} por WhatsApp</span>
+  </a>
+</article>

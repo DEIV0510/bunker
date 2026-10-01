@@ -1,0 +1,97 @@
+---
+// Pedido. No hay pasarela de pago integrada (ver docs/INTEGRACIONES.md): el
+// pedido se envía por WhatsApp con productos, tallas, ciudad y medio de pago
+// preferido, y la tienda confirma disponibilidad, envío y pago. No se simula
+// ningún cobro en línea.
+import Base from '@/layouts/Base.astro';
+import Migas from '@/components/Migas.astro';
+import Icono from '@/components/Icono.astro';
+import { pagosVisibles, textos } from '@/data/negocio';
+import '@/styles/paginas.css';
+---
+
+<Base title="Tu pedido | BUNKERSNEAKERS" description="Revisa tu carrito y envía tu pedido por WhatsApp." page="carrito" noindex>
+  <div class="pedido" data-surface="light">
+    <div class="contenedor">
+      <Migas items={[{ t: 'Inicio', href: '/' }, { t: 'Carrito' }]} />
+      <h1 class="listado__h pedido__h">Tu pedido</h1>
+
+      <div class="pedido__vacio" data-p-vacio hidden>
+        <p class="cart__empty-t">Tu carrito está vacío.</p>
+        <p>Elige un modelo, selecciona tu talla y agrégalo.</p>
+        <a class="btn btn--dark btn--lg" href="/sneakers/">Ver sneakers<Icono name="arrow" /></a>
+      </div>
+
+      <div class="pedido__grid" data-p-lleno>
+        <section aria-labelledby="p-items-h">
+          <h2 class="pedido__sub" id="p-items-h">Productos</h2>
+          <ul class="pedido__lineas" data-p-lineas>
+            <li class="pedido__cargando">Cargando tu carrito…</li>
+          </ul>
+        </section>
+
+        <section class="pedido__panel" aria-labelledby="p-datos-h" data-surface="light">
+          <h2 class="pedido__sub" id="p-datos-h">Datos para tu pedido</h2>
+          <dl class="cart__sum pedido__sum">
+            <div><dt>Subtotal</dt><dd data-p-subtotal>—</dd></div>
+            <div><dt>Envío</dt><dd>{textos.envioBogota ? 'Gratis en Bogotá · otras ciudades se cotizan' : 'Se cotiza según tu ciudad'}</dd></div>
+          </dl>
+          <p class="cart__note" data-p-nota hidden></p>
+
+          <form class="form" data-p-form novalidate>
+            <div class="field">
+              <label for="p-nombre">Nombre <span aria-hidden="true">*</span></label>
+              <input id="p-nombre" name="nombre" type="text" autocomplete="name" required minlength="2" aria-describedby="p-nombre-err" />
+              <p class="field__err" id="p-nombre-err" hidden>Escribe tu nombre.</p>
+            </div>
+            <div class="field">
+              <label for="p-ciudad">Ciudad <span aria-hidden="true">*</span></label>
+              <input id="p-ciudad" name="ciudad" type="text" autocomplete="address-level2" required minlength="3" list="p-ciudades" aria-describedby="p-ciudad-help p-ciudad-err" />
+              <datalist id="p-ciudades">
+                {['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Bucaramanga', 'Cartagena', 'Cúcuta', 'Pereira', 'Villavicencio', 'Ibagué'].map((c) => <option value={c} />)}
+              </datalist>
+              <p class="field__help" id="p-ciudad-help">La dirección exacta nos la compartes por WhatsApp.</p>
+              <p class="field__err" id="p-ciudad-err" hidden>Escribe tu ciudad.</p>
+            </div>
+            <fieldset class="field">
+              <legend class="field__label">Medio de pago preferido</legend>
+              <div class="opciones">
+                {
+                  pagosVisibles.map((p, i) => (
+                    <label class="opcion">
+                      <input type="radio" name="pago" value={p.nombre} checked={i === 0} />
+                      <span class="opcion__t">{p.nombre}</span>
+                      <span class="opcion__d">{p.detalle}</span>
+                    </label>
+                  ))
+                }
+              </div>
+            </fieldset>
+            <div class="field">
+              <label for="p-notas">Notas (opcional)</label>
+              <textarea id="p-notas" name="notas" rows="2" placeholder="Ej.: es para regalo, prefiero recoger en el local…"></textarea>
+            </div>
+            <p class="field__err" role="alert" data-p-err hidden></p>
+            <button class="btn btn--primary btn--lg btn--block" type="submit"><Icono name="whatsapp" />Enviar pedido por WhatsApp</button>
+            <p class="form__note">
+              Aún no hay pago en línea. Al enviar, se abre WhatsApp con tu pedido; te confirmamos disponibilidad, envío y datos de pago
+              antes de cobrar.
+            </p>
+          </form>
+
+          <div class="pedido__ok" data-p-ok hidden tabindex="-1">
+            <p class="pedido__ok-t"><Icono name="check" />Abrimos WhatsApp con tu pedido</p>
+            <p>Cuando envíes el mensaje, te respondemos para confirmar. Si WhatsApp no se abrió, <a href="#" data-p-reabrir>toca aquí</a>.</p>
+            <div class="hero__ctas">
+              <button class="btn btn--dark" type="button" data-p-vaciar>Ya lo envié: vaciar carrito</button>
+              <a class="btn btn--outline" href="/sneakers/">Seguir comprando</a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <script>
+    import '@/scripts/pedido.ts';
+  </script>
+</Base>

@@ -1,0 +1,34 @@
+---
+// Plantilla para páginas de contenido (guías y políticas).
+import Base from '@/layouts/Base.astro';
+import Migas from '@/components/Migas.astro';
+import '@/styles/paginas.css';
+
+interface Props {
+  title: string;
+  description: string;
+  h1: string;
+  kicker: string;
+  intro?: string;
+  migas: { t: string; href?: string }[];
+  jsonLd?: Record<string, unknown>[];
+  ancho?: boolean;
+}
+const { title, description, h1, kicker, intro, migas, jsonLd = [], ancho = false } = Astro.props;
+---
+
+<Base title={title} description={description} page="pagina" jsonLd={jsonLd}>
+  <article class="pagina" data-surface="light">
+    <div class="contenedor">
+      <Migas items={migas} />
+      <header class="pagina__head">
+        <p class="label">{kicker}</p>
+        <h1 class="listado__h">{h1}</h1>
+        {intro && <p class="listado__d">{intro}</p>}
+      </header>
+      <div class:list={['pagina__body', ancho && 'pagina__body--ancho']}>
+        <slot />
+      </div>
+    </div>
+  </article>
+</Base>

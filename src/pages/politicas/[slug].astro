@@ -1,0 +1,146 @@
+---
+// Políticas. Solo afirman lo que el sitio hace de verdad y lo configurado en
+// negocio.ts; lo no confirmado remite a WhatsApp y se marca en modo revisión.
+// RECOMENDADO: revisión legal antes de publicar en el dominio final.
+import PaginaSimple from '@/components/PaginaSimple.astro';
+import { negocio, pagosVisibles } from '@/data/negocio';
+import { waLink } from '@/lib/whatsapp';
+
+export function getStaticPaths() {
+  return ['envios', 'cambios', 'privacidad', 'terminos'].map((slug) => ({ params: { slug } }));
+}
+const { slug } = Astro.params as { slug: 'envios' | 'cambios' | 'privacidad' | 'terminos' };
+const wa = waLink();
+const titulos = {
+  envios: { h1: 'Envíos', t: 'Envíos y cobertura', d: 'Envío gratis en Bogotá y envíos al resto de Colombia con costo según tu ciudad. Contraentrega según cobertura.' },
+  cambios: { h1: 'Cambios y devoluciones', t: 'Cambios y devoluciones', d: 'Cómo funcionan los cambios de talla y el derecho de retracto en compras a distancia en Colombia.' },
+  privacidad: { h1: 'Privacidad', t: 'Política de privacidad', d: 'Qué datos maneja este sitio, para qué y cómo ejercer tus derechos de habeas data.' },
+  terminos: { h1: 'Términos y condiciones', t: 'Términos y condiciones', d: 'Condiciones de compra en BUNKERSNEAKERS: precios, disponibilidad, pagos y marcas.' },
+}[slug];
+const actualizado = '1 de octubre de 2026';
+---
+
+<PaginaSimple
+  title={`${titulos.t} | BUNKERSNEAKERS`}
+  description={titulos.d}
+  h1={titulos.h1}
+  kicker={`Políticas · Actualizado el ${actualizado}`}
+  migas={[{ t: 'Inicio', href: '/' }, { t: titulos.h1 }]}
+>
+  <div class="prosa">
+    {
+      slug === 'envios' && (
+        <>
+          <h2>Bogotá</h2>
+          {negocio.envios.gratisBogota && <p>El envío dentro de Bogotá es gratis.</p>}
+          <p data-pendiente={negocio.envios.condicionesBogota ? undefined : 'condiciones Bogotá'}>
+            {negocio.envios.condicionesBogota ?? 'Las condiciones del envío (zona, día y hora estimada) te las confirmamos por WhatsApp antes de despachar.'}
+          </p>
+          <h2>Resto de Colombia</h2>
+          <p data-pendiente={negocio.envios.costoNacional ? undefined : 'tarifas nacionales'}>
+            {negocio.envios.costoNacional ?? 'El costo y el tiempo de entrega dependen de tu ciudad y de la transportadora. Te los confirmamos por WhatsApp antes del pago.'}
+          </p>
+          {negocio.envios.tiempos && <p>{negocio.envios.tiempos}</p>}
+          <h2>Contraentrega</h2>
+          <p>Disponible según la cobertura de la transportadora en tu ciudad. Elígela al enviar tu pedido y te confirmamos si aplica para tu dirección.</p>
+          <h2>¿Dudas?</h2>
+          <p>
+            Escríbenos por <a href={wa} target="_blank" rel="noopener">WhatsApp {negocio.whatsapp.visible}</a>.
+          </p>
+        </>
+      )
+    }
+    {
+      slug === 'cambios' && (
+        <>
+          <h2>Antes de comprar</h2>
+          <p>
+            Para evitar cambios, revisa la <a href="/guia-de-tallas/">guía de tallas</a> con la tabla oficial de cada marca. Si tienes dudas,
+            te asesoramos por WhatsApp antes del pago.
+          </p>
+          <h2>Cambios de talla</h2>
+          <p data-pendiente={negocio.cambios.politica ? undefined : 'política de cambios'}>
+            {negocio.cambios.politica ?? 'Las condiciones de cambio (plazo, estado del producto y costo del envío) te las confirmamos por WhatsApp antes de tu compra.'}
+          </p>
+          <h2>Derecho de retracto</h2>
+          <p>
+            En compras a distancia, la ley colombiana (Ley 1480 de 2011, artículo 47) te permite retractarte dentro de los 5 días hábiles
+            siguientes a la entrega. El producto debe devolverse en las mismas condiciones en que lo recibiste y los costos de transporte de
+            la devolución corren por tu cuenta. El dinero se reintegra en un plazo máximo de 30 días calendario.
+          </p>
+          <h2>Garantía</h2>
+          <p>Si un producto llega con un defecto, escríbenos por WhatsApp con fotos y te indicamos los pasos.</p>
+          <p>
+            Contacto: <a href={wa} target="_blank" rel="noopener">WhatsApp {negocio.whatsapp.visible}</a>.
+          </p>
+        </>
+      )
+    }
+    {
+      slug === 'privacidad' && (
+        <>
+          <h2>Quién es responsable</h2>
+          <p data-pendiente={negocio.legal.razonSocial ? undefined : 'razón social y NIT'}>
+            {negocio.legal.razonSocial ?? negocio.nombre}
+            {negocio.legal.nit && <>, NIT {negocio.legal.nit}</>}, {negocio.ubicacion.lugar}, {negocio.ubicacion.ciudad}. Contacto:{' '}
+            <a href={wa} target="_blank" rel="noopener">WhatsApp {negocio.whatsapp.visible}</a>
+            {negocio.legal.correo && <> · {negocio.legal.correo}</>}.
+          </p>
+          <h2>Qué datos maneja este sitio</h2>
+          <ul>
+            <li>El sitio no tiene cuentas de usuario ni cobra en línea.</li>
+            <li>Tu carrito se guarda solo en tu navegador (almacenamiento local) y no se envía a ningún servidor.</li>
+            <li>
+              Los formularios de pedido y de compra al por mayor no envían datos a un servidor: arman un mensaje que tú decides enviar por
+              WhatsApp.
+            </li>
+            <li>No usamos cookies de analítica ni de publicidad.</li>
+            <li>El proveedor de alojamiento puede registrar datos técnicos (como la dirección IP) por seguridad.</li>
+          </ul>
+          <h2>Para qué usamos los datos que nos envías</h2>
+          <p>
+            Los datos que nos compartes por WhatsApp (nombre, ciudad, dirección y teléfono) se usan solo para gestionar tu pedido, el envío y
+            la atención. Al escribirnos por WhatsApp también aplica la política de privacidad de ese servicio.
+          </p>
+          <h2>Tus derechos</h2>
+          <p>
+            De acuerdo con la Ley 1581 de 2012, puedes conocer, actualizar, rectificar y pedir la eliminación de tus datos, o revocar la
+            autorización de su uso. Escríbenos por WhatsApp para hacerlo.
+          </p>
+        </>
+      )
+    }
+    {
+      slug === 'terminos' && (
+        <>
+          <h2>Precios</h2>
+          <p>
+            Los precios están en pesos colombianos (COP). Si un producto dice «Precio por confirmar», te damos el valor por WhatsApp antes de
+            cualquier pago.
+          </p>
+          <h2>Disponibilidad y pedido</h2>
+          <p>
+            Al enviar tu pedido desde la web, este llega a nuestro WhatsApp. El pedido queda confirmado cuando te respondemos con la
+            disponibilidad de la talla, el valor final y el envío.
+          </p>
+          <h2>Pagos</h2>
+          <p>
+            Medios previstos: {pagosVisibles.map((p) => p.nombre).join(', ')}. La contraentrega depende de la cobertura de la
+            transportadora y Addi de su aprobación. La web no procesa pagos en línea.
+          </p>
+          <h2>Fotos</h2>
+          <p>Las fotos muestran el modelo y su color; el tono puede variar ligeramente según tu pantalla.</p>
+          <h2>Marcas</h2>
+          <p>
+            Las marcas y nombres de modelos mencionados pertenecen a sus respectivos dueños y se usan solo para identificar los productos.
+            {negocio.nombre} no es una tienda oficial de esas marcas.
+          </p>
+          <h2>Envíos y cambios</h2>
+          <p>
+            Consulta las políticas de <a href="/politicas/envios/">envíos</a> y de <a href="/politicas/cambios/">cambios y devoluciones</a>.
+          </p>
+        </>
+      )
+    }
+  </div>
+</PaginaSimple>

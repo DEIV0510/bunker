@@ -1,0 +1,26 @@
+---
+import Base from '@/layouts/Base.astro';
+import Listado from '@/components/Listado.astro';
+import { marcas, productos } from '@/lib/catalogo';
+import '@/styles/paginas.css';
+
+export function getStaticPaths() {
+  return marcas.map((m) => ({ params: { slug: m.slug }, props: { m } }));
+}
+const { m } = Astro.props as { m: (typeof marcas)[number] };
+const items = productos.filter((p) => p.marca === m.nombre);
+---
+
+<Base
+  title={`${m.nombre}: sneakers en Bogotá | BUNKERSNEAKERS`}
+  description={`Modelos ${m.nombre} en el Bunker: ${items.map((p) => p.modelo.replace(/[«»]/g, '')).join(', ')}. Elige tu talla y compra en la web o por WhatsApp.`}
+  page="catalogo"
+>
+  <Listado
+    titulo={m.nombre}
+    kicker={`Marca · ${items.length} ${items.length === 1 ? 'modelo' : 'modelos'}`}
+    items={items}
+    migas={[{ t: 'Inicio', href: '/' }, { t: 'Sneakers', href: '/sneakers/' }, { t: m.nombre }]}
+    actual=""
+  />
+</Base>

@@ -1,0 +1,18 @@
+---
+import PaginaSimple from '@/components/PaginaSimple.astro';
+import FormMayor from '@/components/FormMayor.astro';
+import { negocio } from '@/data/negocio';
+---
+
+<PaginaSimple
+  title="Compra de sneakers al por mayor en Bogotá | BUNKERSNEAKERS"
+  description="Cotiza sneakers al por mayor: cuéntanos tu ciudad, la cantidad aproximada y los modelos de interés y te enviamos las condiciones por WhatsApp."
+  h1="Compra al por mayor"
+  kicker="Para tiendas, emprendimientos y grupos"
+  intro={negocio.mayoristas.condiciones ?? 'Cuéntanos qué buscas. Las condiciones (mínimos, precios y tiempos) dependen de la cantidad y los modelos: te las enviamos por WhatsApp.'}
+  migas={[{ t: 'Inicio', href: '/' }, { t: 'Por mayor' }]}
+>
+  <div data-surface="dark" class="pagina__card">
+    <FormMayor idp="pag-mayor" />
+  </div>
+</PaginaSimple>

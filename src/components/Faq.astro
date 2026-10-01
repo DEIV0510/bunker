@@ -1,0 +1,26 @@
+---
+// Preguntas frecuentes con <details> nativo (sin JS, accesible con teclado).
+// Las respuestas provisionales (confirmada: false) se marcan en modo revisión.
+import Icono from '@/components/Icono.astro';
+import { faqs } from '@/data/negocio';
+
+interface Props {
+  hx?: 'h2' | 'h3';
+}
+const { hx: H = 'h3' } = Astro.props;
+const anclas: Record<number, string> = { 1: 'pagos', 2: 'addi', 3: 'envios', 4: 'contraentrega', 5: 'cambios', 7: 'por-mayor' };
+---
+
+<div class="faq">
+  {
+    faqs.map((f, i) => (
+      <details class="faq__item" id={anclas[i]} data-pendiente={f.confirmada ? undefined : 'respuesta provisional'}>
+        <summary>
+          <H class="faq__q">{f.q}</H>
+          <Icono name="plus" class="faq__icon" />
+        </summary>
+        <p class="faq__a">{f.a}</p>
+      </details>
+    ))
+  }
+</div>
