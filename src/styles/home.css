@@ -231,8 +231,8 @@
   .hero__fig img {
     animation: in-zoom 1.4s var(--ease-out) both;
   }
-  html.intro:not(.intro-out) .hero [data-in],
-  html.intro:not(.intro-out) .hero__fig img {
+  html.is-intro:not(.is-intro-out) .hero [data-in],
+  html.is-intro:not(.is-intro-out) .hero__fig img {
     animation-play-state: paused;
   }
 }

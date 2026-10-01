@@ -762,15 +762,12 @@ html:has(.barra-compra.is-on) .toast {
   color: var(--fg);
 }
 .ftr__giant {
-  font-family: var(--font-display);
-  font-size: calc((100vw - 2 * var(--gutter)) / 2.86);
-  line-height: 0.72;
-  text-align: center;
-  color: #161616;
-  user-select: none;
-  height: 0.56em;
-  overflow: hidden;
-  padding-top: 0.08em;
+  display: block;
+  width: calc(100% - 2 * var(--gutter));
+  max-width: calc(var(--max) - 2 * var(--gutter));
+  height: auto;
+  margin: 8px auto 0;
+  fill: #171717;
 }
 @media (min-width: 760px) {
   .ftr__grid {
@@ -795,7 +792,7 @@ html:has(.barra-compra.is-on) .toast {
 .intro {
   display: none;
 }
-html.intro .intro {
+html.is-intro .intro {
   display: block;
   position: fixed;
   inset: 0;
@@ -807,7 +804,7 @@ html.intro .intro {
   right: 0;
   height: 50.2%;
   background: var(--negro);
-  transition: transform 0.6s var(--ease-io);
+  transition: transform 0.45s var(--ease-io);
 }
 .intro__half--top {
   top: 0;
@@ -847,17 +844,17 @@ html.intro .intro {
   stroke-width: 0.3;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: intro-draw 0.55s var(--ease-out) forwards;
+  animation: intro-draw 0.4s var(--ease-out) forwards;
 }
 .intro__b-fill {
   fill: var(--hueso);
   opacity: 0;
-  animation: intro-fade 0.25s 0.45s forwards;
+  animation: intro-fade 0.2s 0.3s forwards;
 }
 .intro__b-slit {
   fill: var(--verde);
   opacity: 0;
-  animation: intro-slit 0.32s 0.62s steps(1) forwards;
+  animation: intro-slit 0.2s 0.36s steps(1) forwards;
 }
 .intro__bar {
   width: 168px;
@@ -872,28 +869,28 @@ html.intro .intro {
   transform: scaleX(var(--p, 0.04));
   transition: transform 0.4s var(--ease-out);
 }
+/* Visible desde el primer fotograma: sin contenido pintado, Chrome deja la
+   pantalla anterior en blanco y la intro no se vería (y el FCP se atrasa). */
 .intro__word {
   width: 168px;
   height: auto;
   color: var(--hueso);
-  opacity: 0;
-  animation: intro-fade 0.3s 0.3s forwards;
 }
-html.intro-out .intro__core {
+html.is-intro-out .intro__core {
   opacity: 0;
 }
-html.intro-out .intro::after {
-  animation: intro-line 0.8s var(--ease-out) forwards;
+html.is-intro-out .intro::after {
+  animation: intro-line 0.6s var(--ease-out) forwards;
 }
-html.intro-out .intro__half--top {
+html.is-intro-out .intro__half--top {
   transform: translateY(-100%);
-  transition-delay: 0.16s;
+  transition-delay: 0.06s;
 }
-html.intro-out .intro__half--bot {
+html.is-intro-out .intro__half--bot {
   transform: translateY(100%);
-  transition-delay: 0.16s;
+  transition-delay: 0.06s;
 }
-html.intro-out .intro {
+html.is-intro-out .intro {
   pointer-events: none;
 }
 @keyframes intro-line {

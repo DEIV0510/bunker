@@ -457,6 +457,15 @@
   width: 112px;
   height: 112px;
 }
+@media (max-width: 479.98px) {
+  .pedido__lineas .cart__line {
+    grid-template-columns: 88px 1fr;
+  }
+  .pedido__lineas .cart__img {
+    width: 88px;
+    height: 88px;
+  }
+}
 .pedido__lineas .cart__ctrls .cart__price {
   margin-left: auto;
 }

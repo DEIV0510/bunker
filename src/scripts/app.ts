@@ -7,7 +7,6 @@ import { waLink, msgMayor } from '@/lib/whatsapp';
 declare global {
   interface Window {
     __bunker?: boolean;
-    __introTimer?: number;
   }
 }
 window.__bunker = true;
@@ -341,30 +340,4 @@ if ('IntersectionObserver' in window && html.classList.contains('mo')) {
   for (const el of reveals) el.classList.add('is-in');
 }
 
-// ── Pantalla de carga: avanza con hitos reales y se retira ──────────────────
-if (html.classList.contains('intro')) {
-  const bar = $('[data-intro-bar]');
-  const set = (p: number) => bar?.style.setProperty('--p', String(p));
-  const t0 = performance.now();
-  let fin = false;
-  const salir = () => {
-    if (fin) return;
-    fin = true;
-    clearTimeout(window.__introTimer);
-    set(1);
-    // Deja ver la línea completa un instante y abre el búnker.
-    const wait = Math.max(0, 900 - (performance.now() - t0));
-    setTimeout(() => {
-      html.classList.add('intro-out');
-      setTimeout(() => html.classList.remove('intro', 'intro-out'), 900);
-    }, Math.min(wait, 260));
-  };
-  set(0.34); // HTML y JS listos
-  const hero = $<HTMLImageElement>('.hero__fig img');
-  Promise.all([
-    document.fonts?.ready.then(() => set(0.67)),
-    hero ? (hero.complete ? Promise.resolve() : hero.decode().catch(() => undefined)) : Promise.resolve(),
-  ]).then(salir, salir);
-  // Tope: nunca más de 1,8 s desde que arrancó la página.
-  setTimeout(salir, Math.max(0, 1800 - performance.now()));
-}
+// La pantalla de carga se controla desde el script en línea de Base.astro.

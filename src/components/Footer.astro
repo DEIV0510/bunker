@@ -4,6 +4,10 @@ import Icono from '@/components/Icono.astro';
 import { categorias, marcas } from '@/lib/catalogo';
 import { negocio, pagosVisibles } from '@/data/negocio';
 import { waLink, msgGeneral } from '@/lib/whatsapp';
+import logo from '@/data/logo.json';
+
+// Ancho de «BUNKER» en las letras del logo (la B es el símbolo, sin troneras pintadas).
+const bunkerW = 110.5;
 
 const year = new Date().getFullYear();
 const redes = [
@@ -101,5 +105,7 @@ const redes = [
       <li><a href="/politicas/cambios/">Cambios</a></li>
     </ul>
   </div>
-  <p class="ftr__giant" aria-hidden="true">BUNKER</p>
+  <svg class="ftr__giant" viewBox={`0 0 ${bunkerW} 15`} preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
+    <path fill-rule="evenodd" d={logo.bunker} />
+  </svg>
 </footer>

@@ -128,18 +128,46 @@ const ld = page === 'home' ? [org, webSite, ...jsonLd] : [org, ...jsonLd];
           rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
         } catch (e) {}
         d.classList.add(rm ? 'rm' : 'mo');
-        // Pantalla de carga: solo en la portada, 1.ª visita de la sesión, sin
-        // ahorro de datos ni 2G y con animaciones permitidas.
+        // Pantalla de carga: solo en la portada, 1.ª visita de la sesión, con
+        // animaciones permitidas y sin ahorro de datos ni conexión 3G o peor.
+        // Se controla desde aquí (no desde el JS principal) para abrirse apenas
+        // el HTML está listo: mientras la cortina tapa la foto, Chrome no la
+        // pinta y el LCP espera. Hitos reales: HTML analizado → fuentes listas.
         try {
           var c = navigator.connection;
-          var slow = c && (c.saveData || /2g/.test(c.effectiveType || ''));
+          var slow = c && (c.saveData || /(^|-)(2g|3g)$/.test(c.effectiveType || ''));
           if (document.currentScript.dataset.intro === '1' && !rm && !slow && !sessionStorage.getItem('bunker:intro')) {
-            d.classList.add('intro');
+            d.classList.add('is-intro');
             sessionStorage.setItem('bunker:intro', '1');
-            // Red de seguridad: si el JS principal no llega, se retira sola.
-            window.__introTimer = setTimeout(function () {
-              d.classList.add('intro-out');
-            }, 2600);
+            // La duración mínima se cuenta desde el primer fotograma pintado,
+            // que es cuando arranca la animación de la B.
+            var t0 = performance.now();
+            requestAnimationFrame(function () {
+              t0 = performance.now();
+            });
+            var fin = false;
+            var barra = function (p) {
+              var b = document.querySelector('[data-intro-bar]');
+              if (b) b.style.setProperty('--p', p);
+            };
+            var salir = function () {
+              if (fin) return;
+              fin = true;
+              barra(1);
+              d.classList.add('is-intro-out');
+              setTimeout(function () {
+                d.classList.remove('is-intro', 'is-intro-out');
+              }, 650);
+            };
+            var listo = function () {
+              barra(0.6);
+              // Lo justo para que la B termine de dibujarse (~0,55 s).
+              setTimeout(salir, Math.max(0, 550 - (performance.now() - t0)));
+            };
+            if (document.readyState !== 'loading') listo();
+            else document.addEventListener('readystatechange', listo, { once: true });
+            if (document.fonts) document.fonts.ready.then(function () { if (!fin) barra(0.85); });
+            setTimeout(salir, 1400);
           }
         } catch (e) {}
         // Si el JS principal no llega, nada queda oculto esperando un revelado.
