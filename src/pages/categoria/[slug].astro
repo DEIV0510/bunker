@@ -2,6 +2,7 @@
 import Base from '@/layouts/Base.astro';
 import Listado from '@/components/Listado.astro';
 import { categorias, productosDe, type Categoria } from '@/lib/catalogo';
+import { titulo } from '@/lib/seo';
 import '@/styles/paginas.css';
 
 export function getStaticPaths() {
@@ -11,7 +12,7 @@ const { c } = Astro.props as { c: Categoria };
 const items = productosDe(c.slug);
 ---
 
-<Base title={`${c.titulo} | BUNKERSNEAKERS Bogotá`} description={`${c.descripcion} ${items.length} modelos con guía de tallas oficial. Compra en la web o por WhatsApp.`} page="catalogo">
+<Base title={titulo(c.titulo)} description={`${c.descripcion} ${items.length} modelos con guía de tallas oficial. Compra en la web o por WhatsApp.`} page="catalogo">
   <Listado
     titulo={c.nombre}
     kicker={`Categoría · ${items.length} ${items.length === 1 ? 'modelo' : 'modelos'}`}

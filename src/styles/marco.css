@@ -676,6 +676,11 @@ html:has(.barra-compra.is-on) .toast {
 .ftr__brand p {
   color: var(--fg-2);
 }
+.ftr__brand > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
 .ftr__logo {
   height: 22px;
   width: auto;

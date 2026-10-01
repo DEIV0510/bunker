@@ -22,6 +22,7 @@ import { pictureData, getMedia, thumb } from '@/lib/media';
 import { tallasReferenciaEU, tablaPorMarca } from '@/data/tallas';
 import { negocio, pagosVisibles } from '@/data/negocio';
 import { waLink, msgProducto, msgTalla } from '@/lib/whatsapp';
+import { titulo } from '@/lib/seo';
 import '@/styles/paginas.css';
 
 export function getStaticPaths() {
@@ -71,7 +72,7 @@ const fichaDatos = {
 ---
 
 <Base
-  title={`${nombre}${p.variantes.length === 1 ? ` ${v0.color}` : ''} | BUNKERSNEAKERS Bogotá`}
+  title={titulo(nombre, p.variantes.length === 1 ? v0.color : undefined)}
   description={descMeta}
   image={`/og/${p.slug}.jpg`}
   imageAlt={`${nombre} — BUNKERSNEAKERS`}

@@ -193,10 +193,12 @@ const ld = page === 'home' ? [org, webSite, ...jsonLd] : [org, ...jsonLd];
     <Dialogos />
     {
       waFlotante && (
-        <a class="wa-flotante" href={waLink(msgGeneral())} target="_blank" rel="noopener" data-wa-flotante>
-          <Icono name="whatsapp" size={26} />
-          <span class="sr-only">Escríbenos por WhatsApp</span>
-        </a>
+        <aside aria-label="Contacto por WhatsApp">
+          <a class:list={['wa-flotante', page === 'home' && 'is-off']} href={waLink(msgGeneral())} target="_blank" rel="noopener" data-wa-flotante>
+            <Icono name="whatsapp" size={26} />
+            <span class="sr-only">Escríbenos por WhatsApp</span>
+          </a>
+        </aside>
       )
     }
     <div class="toast" role="status" aria-live="polite" data-toast></div>

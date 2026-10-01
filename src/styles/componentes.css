@@ -881,3 +881,39 @@ html.js.mo .sec-head .slit {
 .migas [aria-current] {
   color: var(--fg);
 }
+
+/* ───────────── Objetivos táctiles ≥ 44 px ─────────────
+   En pantallas táctiles, los enlaces de listas, migas y franjas compactas
+   crecen hasta 44 px de alto; en escritorio conservan su ritmo visual. */
+.chip--btn {
+  min-height: 44px;
+}
+@media (pointer: coarse) {
+  :root {
+    --topbar-h: 44px;
+  }
+  .migas a,
+  .ftr .ftr__col a,
+  .ftr .ftr__bottom a {
+    min-height: 44px;
+  }
+}
+/* Títulos enlazados: el área táctil se extiende sin mover el diseño. */
+.sel__t a,
+.cart__name a {
+  position: relative;
+}
+.sel__t a::after,
+.cart__name a::after {
+  content: '';
+  position: absolute;
+  inset: -13px 0;
+}
+
+/* Los ítems de grid no deben crecer por el ancho mínimo de una tabla con scroll. */
+.tallas,
+.tallas > *,
+.tallas-sec__grid > *,
+.tallas-pag > * {
+  min-width: 0;
+}

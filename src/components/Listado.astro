@@ -34,7 +34,7 @@ const marcasAqui = marcas.filter((m) => items.some((p) => p.marca === m.nombre))
       {descripcion && <p class="listado__d">{descripcion}</p>}
     </div>
 
-    <nav class="listado__cats" aria-label="Categorías">
+    <nav class="listado__cats" aria-label="Filtrar por categoría">
       <ul>
         <li><a class="chip" href="/sneakers/" aria-current={actual === '/sneakers/' ? 'page' : undefined}>Todos</a></li>
         {

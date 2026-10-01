@@ -147,6 +147,12 @@
 .hero__drop:hover .icono {
   transform: translateX(4px);
 }
+@media (max-width: 374.98px) {
+  .hero__eyebrow > span:first-child,
+  .hero__eyebrow > span:nth-child(2)::before {
+    display: none;
+  }
+}
 @media (max-width: 479.98px) {
   .hero__eyebrow-x {
     display: none;
@@ -501,6 +507,8 @@ html.js.mo .cats__tile:not(.is-in) .foto {
   align-items: baseline;
 }
 .marcas__list a {
+  display: inline-block;
+  padding-block: 5px;
   font-family: var(--font-display);
   font-size: clamp(2rem, 5.4vw, 4.75rem);
   line-height: 1.05;
